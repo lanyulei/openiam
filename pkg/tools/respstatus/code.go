@@ -7,10 +7,6 @@ var (
 	AuthorizationFormatError = response.Response{Code: 30002, Message: "请求头中 Authorization 格式有误"}
 	InvalidTokenError        = response.Response{Code: 30003, Message: "Token 无效"}
 	NoPermissionError        = response.Response{Code: 30004, Message: "暂无请求权限"}
-	UnSerializeError         = response.Response{Code: 30005, Message: "反序列化数据失败"}
-	BindJSONError            = response.Response{Code: 30006, Message: "绑定参数失败"}
-
-	TypeConversionError = response.Response{Code: 30101, Message: "类型转换失败"}
 
 	InvalidParameterError  = response.Response{Code: 40001, Message: "无效参数"}
 	QueryUserError         = response.Response{Code: 40002, Message: "查询用户失败"}
@@ -63,63 +59,8 @@ var (
 	LoginLogListError      = response.Response{Code: 40051, Message: "查询登陆日志失败"}
 	DeleteLoginLogError    = response.Response{Code: 40052, Message: "删除登陆日志失败"}
 
-	CreateFlowGroupError            = response.Response{Code: 40053, Message: "创建流程分类失败"}
-	DeleteFlowGroupError            = response.Response{Code: 40054, Message: "删除流程分类失败"}
-	FlowGroupExistError             = response.Response{Code: 40055, Message: "流程分类已存在"}
-	GetFlowGroupError               = response.Response{Code: 40056, Message: "查询流程分类失败"}
-	GetFlowError                    = response.Response{Code: 40057, Message: "查询流程数据失败"}
-	FlowExistError                  = response.Response{Code: 40058, Message: "流程已存在"}
-	GetWorkOrderError               = response.Response{Code: 40059, Message: "查询工单数据失败"}
-	WorkOrderExistError             = response.Response{Code: 40060, Message: "工单数据已存在"}
-	GetFlowTemplateError            = response.Response{Code: 40061, Message: "获取模板数据失败"}
-	CreateFlowTemplateError         = response.Response{Code: 40062, Message: "创建模板失败"}
-	DeleteFlowTemplateError         = response.Response{Code: 40063, Message: "删除模板失败"}
-	UpdateFlowTemplateError         = response.Response{Code: 40064, Message: "更新模板失败"}
-	FlowTemplateExistError          = response.Response{Code: 40065, Message: "模板已存在"}
-	UpdateFlowGroupError            = response.Response{Code: 40066, Message: "更新流程分类失败"}
-	GetFlowTemplateRelationError    = response.Response{Code: 40067, Message: "查询流程与模板的关联失败"}
-	FlowTemplateRelationExistError  = response.Response{Code: 40068, Message: "流程与模板关联已存在"}
-	CreateFlowError                 = response.Response{Code: 40069, Message: "创建流程失败"}
-	UpdateFlowError                 = response.Response{Code: 40070, Message: "更新流程失败"}
-	DeleteFlowError                 = response.Response{Code: 40071, Message: "删除流程失败"}
-	CreateFlowTemplateRelationError = response.Response{Code: 40072, Message: "创建流程与模板的关联失败"}
-	DeleteFlowTemplateRelationError = response.Response{Code: 40072, Message: "删除流程与模板的关联失败"}
-	DeleteFlowTaskRelationError     = response.Response{Code: 40073, Message: "删除流程与任务的关联失败"}
-	CreateFlowCollectionError       = response.Response{Code: 40074, Message: "用户收藏流程失败"}
-	DeleteFlowCollectionError       = response.Response{Code: 40075, Message: "用户取消收藏流程失败"}
-	GetFlowCollectionError          = response.Response{Code: 40076, Message: "获取用户收藏的流程失败"}
-	GetFlowEdgeError                = response.Response{Code: 40077, Message: "获取流程流转失败"}
-	CreateWorkOrderError            = response.Response{Code: 40078, Message: "创建工单失败"}
-	WorkOrderDataError              = response.Response{Code: 40080, Message: "获取工单表单数据失败"}
-	WorkOrderHandlerError           = response.Response{Code: 40081, Message: "处理工单失败"}
-	DeleteWorkOrderUserHandlerError = response.Response{Code: 40083, Message: "删除工单中未处理的所有处理人关联失败"}
-	CreateWorkOrderHandlerError     = response.Response{Code: 40084, Message: "创建工单处理人信息失败"}
-	GetWorkOrderHistoryError        = response.Response{Code: 40085, Message: "获取工单操作历史失败"}
-	GetStartNodeError               = response.Response{Code: 40086, Message: "获取开始节点失败"}
-	DeleteWorkOrderHistoryError     = response.Response{Code: 40087, Message: "删除工单操作历史失败"}
-	DeleteWorkOrderHandlerError     = response.Response{Code: 40088, Message: "删除工单处理人数据失败"}
-	DeleteWorkOrderDataError        = response.Response{Code: 40089, Message: "删除工单表单数据失败"}
-	DeleteWorkOrderError            = response.Response{Code: 40090, Message: "删除工单数据失败"}
-	GetNodeError                    = response.Response{Code: 40091, Message: "获取节点失败"}
-	GetUserError                    = response.Response{Code: 40092, Message: "获取用户失败"}
-	CloseWorkOrderError             = response.Response{Code: 40093, Message: "关闭工单失败"}
-	GetWorkOrderHandlerError        = response.Response{Code: 40094, Message: "获取工单处理人数据失败"}
-	CreateWorkOrderHistoryError     = response.Response{Code: 40095, Message: "创建工单操作历史失败"}
-	UpdateWorkOrderError            = response.Response{Code: 40096, Message: "更新工单失败"}
-	GetFlowNodeError                = response.Response{Code: 40097, Message: "获取流程节点失败"}
-	GetFlowCellsError               = response.Response{Code: 40098, Message: "获取流程数据详情失败"}
-	GetFlowAssistanceError          = response.Response{Code: 40099, Message: "获取流程协助人失败"}
+	GetUserError = response.Response{Code: 40092, Message: "获取用户失败"}
 
-	TaskWorkerListError        = response.Response{Code: 40100, Message: "获取任务工作节点数据失败"}
-	DeleteWorkerError          = response.Response{Code: 40101, Message: "删除工作节点数据失败"}
-	CreateTaskError            = response.Response{Code: 40102, Message: "创建任务失败"}
-	UpdateTaskError            = response.Response{Code: 40103, Message: "更新任务失败"}
-	DeleteTaskError            = response.Response{Code: 40104, Message: "删除任务失败"}
-	GetFlowTaskRelationError   = response.Response{Code: 40105, Message: "获取流程绑定的任务数据失败"}
-	FlowTaskRelationExistError = response.Response{Code: 40106, Message: "流程与任务存在关联关系"}
-	GetTaskError               = response.Response{Code: 40107, Message: "获取任务数据失败"}
-	GetTaskHistoryError        = response.Response{Code: 40108, Message: "获取任务历史数据失败"}
-	DeleteTaskHistoryError     = response.Response{Code: 40109, Message: "删除任务历史数据失败"}
 	LoginLogInfoError          = response.Response{Code: 40110, Message: "获取当前登录用户的最近一次登录详情失败"}
 	UpdatePermissionCacheError = response.Response{Code: 40111, Message: "更新角色权限缓存失败"}
 	GetAppGroupError           = response.Response{Code: 40112, Message: "获取应用分组失败"}
@@ -135,9 +76,6 @@ var (
 	AppExistError              = response.Response{Code: 40122, Message: "应用已存在"}
 	AppHasMenuError            = response.Response{Code: 40123, Message: "应用下存在菜单"}
 	DecodePasswordError        = response.Response{Code: 40124, Message: "解码密码失败"}
-	HandlerEmptyError          = response.Response{Code: 40125, Message: "处理人不能为空"}
-	WorkOrderScoredError       = response.Response{Code: 40126, Message: "工单已评分"}
-	UpdateWorkOrderScoreError  = response.Response{Code: 40127, Message: "更新工单评分失败"}
 
 	GetDepartmentListError      = response.Response{Code: 40200, Message: "获取部门列表失败"}
 	CreateDepartmentError       = response.Response{Code: 40201, Message: "创建部门失败"}
@@ -157,26 +95,13 @@ var (
 	GetRoleUserError            = response.Response{Code: 40215, Message: "获取角色下的用户失败"}
 	GetRoleApiError             = response.Response{Code: 40216, Message: "获取角色下的接口失败"}
 
-	GetStatisticsError = response.Response{Code: 40300, Message: "获取统计数据失败"}
-
 	UploadFileError         = response.Response{Code: 40400, Message: "上传文件失败"}
 	GetSettingsError        = response.Response{Code: 40401, Message: "获取系统配置失败"}
 	UpdateSettingsError     = response.Response{Code: 40402, Message: "更新系统配置失败"}
 	CheckRegisterRouteError = response.Response{Code: 40405, Message: "检查注册路由失败"}
 
-	CreateCommentsError = response.Response{Code: 40500, Message: "新建评论失败"}
-	GetCommentsError    = response.Response{Code: 40501, Message: "获取评论失败"}
-
 	GetAuditLogError    = response.Response{Code: 40600, Message: "获取审计日志失败"}
 	DeleteAuditLogError = response.Response{Code: 40601, Message: "删除审计日志失败"}
 
-	GetAvailableInstancesError = response.Response{Code: 41000, Message: "获取可用服务实例失败"}
-	NoAvailableInstancesError  = response.Response{Code: 41001, Message: "没有可用的服务实例"}
-	RequestForwardError        = response.Response{Code: 41002, Message: "请求转发失败"}
-
-	StatisticsModelError     = response.Response{Code: 41100, Message: "统计模型错误"}
-	StatisticsNameExistError = response.Response{Code: 41101, Message: "统计名称已存在"}
-	CreateStatisticsError    = response.Response{Code: 41102, Message: "创建统计失败"}
-	UpdateStatisticsError    = response.Response{Code: 41103, Message: "更新统计失败"}
-	DeleteStatisticsError    = response.Response{Code: 41104, Message: "删除统计失败"}
+	RequestForwardError = response.Response{Code: 41002, Message: "请求转发失败"}
 )
