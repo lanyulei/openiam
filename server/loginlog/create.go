@@ -1,16 +1,12 @@
 package loginlog
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/lanyulei/toolkit/db"
+	"github.com/lanyulei/toolkit/logger"
+	"github.com/mssola/user_agent"
 	"openiam/app/system/models"
 	"openiam/pkg/tools"
-
-	"github.com/lanyulei/toolkit/logger"
-
-	"github.com/lanyulei/toolkit/db"
-
-	"github.com/mssola/user_agent"
-
-	"github.com/gin-gonic/gin"
 )
 
 func Create(c *gin.Context, username, status string) {

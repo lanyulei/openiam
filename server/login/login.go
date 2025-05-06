@@ -3,17 +3,13 @@ package login
 import (
 	"encoding/base64"
 	"fmt"
+	ldapV3 "github.com/go-ldap/ldap/v3"
+	"github.com/lanyulei/toolkit/db"
+	"github.com/lanyulei/toolkit/logger"
+	"golang.org/x/crypto/bcrypt"
 	"openiam/app/system/models"
 	"openiam/pkg/ldap"
 	"openiam/server/system"
-
-	"github.com/lanyulei/toolkit/logger"
-
-	"github.com/lanyulei/toolkit/db"
-
-	ldapV3 "github.com/go-ldap/ldap/v3"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 /*

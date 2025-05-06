@@ -2,11 +2,9 @@ package password
 
 import (
 	"encoding/base64"
-	"openiam/server/system"
-
 	"github.com/lanyulei/toolkit/logger"
-
 	"golang.org/x/crypto/bcrypt"
+	"openiam/server/system"
 )
 
 /*
