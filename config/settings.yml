@@ -1,0 +1,73 @@
+server:
+  host: localhost
+  port: 8000
+  mode: dev
+rpc:
+  enable: true
+  server: :8001
+ssl:
+  enable: false
+  key: keystring
+  pem: temp/pem.pem
+upload:
+  isGetHost: 0
+  url: localhost:8000
+log:
+  level: debug
+  maxSize: 1024
+  maxAge: 30
+  maxBackups: 10
+  localTime: 1
+  compress: 1
+  console: 1
+  path: log/openiam.log
+db:
+  type: postgres
+  dsn: host=localhost user=postgres password=123456 dbname=openiam port=5432 sslmode=disable TimeZone=Asia/Shanghai
+  maxOpenConn: 20000
+  maxIdleConn: 0
+  connMaxLifetime: 60
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: 123456
+  db: 4
+jwt:
+  issuer: openiam
+  http:
+    expires: 6000
+    secret: xxxx
+  rpc:
+    expires: 2
+    secret: xxxx
+ldap:
+  anonymousQuery: 0
+  baseDn: dc=fdevops,dc=com
+  bindPwd: 123456
+  bindUserDn: cn=admin,dc=fdevops,dc=com
+  host: localhost
+  port: 389
+  tls: 0
+  userField: uid
+casbin:
+  tableName: system_casbin_rule
+  isTiming: false
+  intervalTime: 60
+notify:
+  email:
+    alias: openiam
+    host: smtp.qq.com
+    port: 587
+    user: xxx@qq.com
+    password: xxxxxx
+  dingTalkNotify:
+    agentId: xxx
+    appKey: xxx
+    appSecret: xxx
+  larkNotify:
+    appId: xxx
+    appSecret: xxx
+  weComNotify:
+    corpId: xx
+    agentId: xxx
+    appSecret: xx
