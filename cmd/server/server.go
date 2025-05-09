@@ -2,13 +2,12 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"openiam/common/middleware/permission"
 	"openiam/common/router"
 	"openiam/pkg/config"
-	"openiam/pkg/rpc/server"
 	"openiam/pkg/tools"
 	"os"
 	"os/signal"
@@ -48,16 +47,24 @@ func setup() {
 	config.Setup(configYml)
 
 	// 日志配置
-	logger.Setup(viper.GetString(`log.level`), viper.GetString(`log.path`), viper.GetInt(`log.maxSize`), viper.GetBool(`log.localTime`), viper.GetBool(`log.compress`), viper.GetBool(`log.console`), nil)
+	logger.Setup(
+		viper.GetString(`log.level`),
+		viper.GetString(`log.path`),
+		viper.GetInt(`log.maxSize`),
+		viper.GetBool(`log.localTime`),
+		viper.GetBool(`log.compress`),
+		viper.GetBool(`log.console`),
+		nil,
+	)
 
 	// 数据库配置
-	db.Setup(viper.GetString("db.type"), viper.GetString("db.dsn"), viper.GetInt("db.maxIdleConn"), viper.GetInt("db.maxOpenConn"), viper.GetInt("db.connMaxLifetime"))
-
-	// Redis 链接
-	redis.Setup(viper.GetString("redis.host"), viper.GetString("redis.password"), viper.GetInt("redis.port"), viper.GetInt("redis.db"))
-
-	// 加载权限配置
-	permission.Setup()
+	db.Setup(
+		viper.GetString("db.type"),
+		viper.GetString("db.dsn"),
+		viper.GetInt("db.maxIdleConn"),
+		viper.GetInt("db.maxOpenConn"),
+		viper.GetInt("db.connMaxLifetime"),
+	)
 }
 
 func run() (err error) {
@@ -86,11 +93,11 @@ func run() (err error) {
 	go func() {
 		// 服务连接
 		if viper.GetBool("ssl.enable") {
-			if err := srv.ListenAndServeTLS(viper.GetString("ssl.pem"), viper.GetString("ssl.key")); err != nil && err != http.ErrServerClosed {
+			if err := srv.ListenAndServeTLS(viper.GetString("ssl.pem"), viper.GetString("ssl.key")); err != nil && !errors.Is(err, http.ErrServerClosed) {
 				logger.Fatal("listen: ", err)
 			}
 		} else {
-			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 				logger.Fatal("listen: ", err)
 			}
 		}
@@ -101,13 +108,6 @@ func run() (err error) {
 	fmt.Printf("-  Network: http://%s:%d/ \r\n", tools.GetLocalHost(), viper.GetInt("server.port"))
 	fmt.Printf("%s Enter Control + C Shutdown Server \r\n\n", time.Now().Format("2006-01-02 15:04:05.000"))
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
-
-	// 启动 rpc 服务
-	if viper.GetBool("rpc.enable") {
-		go func() {
-			server.Start()
-		}()
-	}
 
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGKILL)

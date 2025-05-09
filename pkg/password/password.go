@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"github.com/lanyulei/toolkit/logger"
 	"golang.org/x/crypto/bcrypt"
-	"openiam/server/system"
 )
 
 /*
@@ -23,7 +22,7 @@ func DecodePassword(password string) (result string, err error) {
 		return
 	}
 
-	result = string(passwd)[:len(string(passwd))-system.SaltNumber] // 去盐
+	result = string(passwd)[:len(string(passwd))-SaltNumber] // 去盐
 
 	return
 }

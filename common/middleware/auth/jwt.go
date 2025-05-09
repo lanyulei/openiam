@@ -6,7 +6,6 @@ import (
 	"io"
 	"openiam/pkg/jwtauth"
 	"openiam/pkg/tools/respstatus"
-	"openiam/server/audit"
 	"os"
 	"strings"
 
@@ -68,12 +67,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			c.Request.Body = io.NopCloser(bytes.NewBuffer(data))
 
 			if isJSONValid(data) {
-				go func(c *gin.Context, username string, data []byte) {
-					err = audit.Create(c, username, data)
-					if err != nil {
-						logger.Error(err)
-					}
-				}(c, mc.Username, data)
+
 			} else {
 				logger.Errorf("failed to write audit record, request body is not valid json data")
 			}

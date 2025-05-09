@@ -2,16 +2,10 @@ server:
   host: localhost
   port: 8000
   mode: dev
-rpc:
-  enable: true
-  server: :8001
 ssl:
   enable: false
   key: keystring
   pem: temp/pem.pem
-upload:
-  isGetHost: 0
-  url: localhost:8000
 log:
   level: debug
   maxSize: 1024
@@ -27,19 +21,10 @@ db:
   maxOpenConn: 20000
   maxIdleConn: 0
   connMaxLifetime: 60
-redis:
-  host: 127.0.0.1
-  port: 6379
-  password: 123456
-  db: 4
 jwt:
   issuer: openiam
-  http:
-    expires: 6000
-    secret: xxxx
-  rpc:
-    expires: 2
-    secret: xxxx
+  expires: 6000
+  secret: xxxx
 ldap:
   anonymousQuery: 0
   baseDn: dc=fdevops,dc=com

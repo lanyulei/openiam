@@ -3,8 +3,6 @@ package router
 import (
 	"net/http"
 	v1 "openiam/common/router/v1"
-	"openiam/pkg/route"
-	"strings"
 	"time"
 
 	"github.com/lanyulei/toolkit/logger"
@@ -57,21 +55,4 @@ func Setup(g *gin.Engine) {
 
 	// 路由版本
 	v1.RegisterRouter(g.Group(ApiV1Version))
-
-	v1.MicroServiceRouter(g)
-
-	// 确认接口是否注册
-	Routes := make([]*route.Route, 0)
-	for _, r := range g.Routes() {
-		if strings.HasPrefix(r.Path, ApiV1Version+"/") && r.Path != LoginPath && r.Path != CheckRouteRegisterPath {
-			Routes = append(Routes, &route.Route{
-				Method: r.Method,
-				Path:   r.Path,
-			})
-		}
-	}
-	_, err := route.CheckRegisterRoute(Routes)
-	if err != nil {
-		logger.Errorf("failed to check register route, error: %s", err.Error())
-	}
 }

@@ -1,10 +1,7 @@
 package permission
 
 import (
-	"encoding/json"
 	"fmt"
-	"openiam/app/system/models"
-	"openiam/pkg/route"
 	"openiam/pkg/tools/respstatus"
 	"time"
 
@@ -66,19 +63,12 @@ func Setup() *casbin.SyncedEnforcer {
 		enforcer.StartAutoLoadPolicy(time.Second * time.Duration(viper.GetInt("casbin.intervalTime")))
 	}
 
-	// 获取不需要的验证的接口
-	err = SetNoForensicsAPIList()
-	if err != nil {
-		logger.Fatalf("failed to get no forensics api list, error：%v", err)
-	}
-
 	return enforcer
 }
 
 func CheckPermMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var (
-			v  interface{}
 			ok bool
 		)
 
@@ -88,16 +78,6 @@ func CheckPermMiddleware() gin.HandlerFunc {
 		act := c.Request.Method
 		//获取实体
 		sub := c.GetString("username")
-
-		// 验证不需要鉴权的接口
-		r, ok := route.MatchRouter(noForensicsAPIList, obj, act)
-		if ok {
-			//判断是否需要鉴权
-			if v, ok = r["no_forensics"]; ok && v.(bool) {
-				c.Next()
-				return
-			}
-		}
 
 		isAdmin := c.GetBool("isAdmin")
 		if isAdmin {
@@ -124,29 +104,5 @@ func Sync() (err error) {
 	if err != nil {
 		return
 	}
-	return
-}
-
-func SetNoForensicsAPIList() (err error) {
-	var (
-		apiList []models.Api
-		apis    []byte
-	)
-
-	err = db.Orm().Model(&models.Api{}).Where("no_forensics = ?", true).Find(&apiList).Error
-	if err != nil {
-		return
-	}
-
-	apis, err = json.Marshal(apiList)
-	if err != nil {
-		return
-	}
-
-	err = json.Unmarshal(apis, &noForensicsAPIList)
-	if err != nil {
-		return
-	}
-
 	return
 }
