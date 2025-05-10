@@ -1,15 +1,13 @@
 package migrate
 
 import (
+	"github.com/lanyulei/toolkit/db"
+	"github.com/lanyulei/toolkit/logger"
+	"github.com/spf13/viper"
+	"gorm.io/gorm"
 	"openiam/common/models"
 	"os"
 	"strings"
-
-	"github.com/spf13/viper"
-
-	"github.com/lanyulei/toolkit/db"
-	"github.com/lanyulei/toolkit/logger"
-	"gorm.io/gorm"
 )
 
 func InitDB(db *gorm.DB, filePath string) (err error) {

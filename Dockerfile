@@ -10,8 +10,8 @@ FROM alpine:3.17.1 as worker
 
 WORKDIR /opt/openiam
 COPY --from=builder /opt/openiam/openiam /opt/openiam/openiam
-COPY --from=builder /opt/openiam/config/settings.yml /opt/openiam/config
+COPY --from=builder /opt/openiam/config/settings.yaml /opt/openiam/config
 
 EXPOSE 8000
 
-ENTRYPOINT ["/opt/openiam/openiam", "server", "-c", "/opt/openiam/config/settings.yml"]
+ENTRYPOINT ["/opt/openiam/openiam", "server", "-c", "/opt/openiam/config/settings.yaml"]

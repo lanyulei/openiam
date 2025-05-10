@@ -23,8 +23,9 @@ db:
   connMaxLifetime: 60
 jwt:
   issuer: openiam
-  expires: 6000
-  secret: xxxx
+  accessToken:
+    expires: 6000
+    secret: 7c61aa49bd124736917207eb960cede9
 ldap:
   anonymousQuery: 0
   baseDn: dc=fdevops,dc=com

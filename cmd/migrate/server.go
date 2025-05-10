@@ -15,13 +15,10 @@ var (
 	clearValue string
 	list       bool
 	generate   bool
-	solar      bool
-	stellar    bool
-	polaris    bool
 	StartCmd   = &cobra.Command{
 		Use:          "migrate",
 		Short:        "synchronous data structure",
-		Example:      "openiam migrate -c config/settings.yml",
+		Example:      "openiam migrate -c config/settings.yaml",
 		SilenceUsage: true,
 		PreRun: func(cmd *cobra.Command, args []string) {
 			setup()
@@ -33,18 +30,13 @@ var (
 )
 
 func init() {
-	StartCmd.PersistentFlags().StringVarP(&configYml, "config", "c", "config/settings.yml", "specify the profile to start the service")
+	StartCmd.PersistentFlags().StringVarP(&configYml, "config", "c", "config/settings.yaml", "specify the profile to start the service")
 
 	StartCmd.PersistentFlags().BoolVarP(&data, "data", "d", true, "whether to synchronize data")
 	StartCmd.PersistentFlags().BoolVarP(&sync, "sync", "s", false, "synchronized data structure")
 	StartCmd.PersistentFlags().StringVarP(&clearValue, "clear", "e", "", "clear migration records")
 	StartCmd.PersistentFlags().BoolVarP(&list, "list", "l", false, "list of migration records")
 	StartCmd.PersistentFlags().BoolVarP(&generate, "generate", "g", false, "generate sql files for synchronized data")
-
-	// 是否同步其他模块的数据结构
-	StartCmd.PersistentFlags().BoolVarP(&solar, "solar", "o", false, "synchronized solar data structure")
-	StartCmd.PersistentFlags().BoolVarP(&stellar, "stellar", "r", false, "synchronized stellar data structure")
-	StartCmd.PersistentFlags().BoolVarP(&polaris, "polaris", "p", false, "synchronized polaris data structure")
 }
 
 func setup() {

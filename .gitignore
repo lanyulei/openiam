@@ -123,5 +123,5 @@ Temporary Items
 log/
 tmp/
 .idea/
-config/settings.dev.yml
+config/settings.dev.yaml
 

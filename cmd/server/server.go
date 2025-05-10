@@ -27,7 +27,7 @@ var (
 	StartCmd  = &cobra.Command{
 		Use:          "server",
 		Short:        "start API server",
-		Example:      "openiam server -c config/settings.yml",
+		Example:      "openiam server -c config/settings.yaml",
 		SilenceUsage: true,
 		PreRun: func(cmd *cobra.Command, args []string) {
 			setup()
@@ -39,7 +39,7 @@ var (
 )
 
 func init() {
-	StartCmd.PersistentFlags().StringVarP(&configYml, "config", "c", "config/settings.yml", "Start server with provided configuration file")
+	StartCmd.PersistentFlags().StringVarP(&configYml, "config", "c", "config/settings.yaml", "Start server with provided configuration file")
 }
 
 func setup() {
