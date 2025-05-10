@@ -6,13 +6,15 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/lanyulei/toolkit/db"
+	"github.com/lanyulei/toolkit/logger"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
+	"openiam/app/system/models"
 	"time"
 )
 
 type Claims struct {
-	UserId   int    `json:"user_id"`
+	UserId   string `json:"user_id"`
 	Username string `json:"username"`
 	jwt.RegisteredClaims
 }
@@ -28,7 +30,7 @@ type TokenPair struct {
 	ExpiresAt    int64  `json:"expires_at"`
 }
 
-func GenerateTokens(userId int, username string) (result *TokenPair, err error) {
+func GenerateTokens(userId string, username string) (result *TokenPair, err error) {
 	var (
 		now                         = time.Now()
 		jti                         = uuid.New().String()
@@ -53,6 +55,7 @@ func GenerateTokens(userId int, username string) (result *TokenPair, err error) 
 	accessToken = jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
 	signedAccess, err = accessToken.SignedString(viper.GetString("jwt.accessToken.secret"))
 	if err != nil {
+		logger.Errorf("jwt sign access token err: %v", err)
 		return
 	}
 
@@ -70,13 +73,36 @@ func GenerateTokens(userId int, username string) (result *TokenPair, err error) 
 	refreshToken = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
 	signedRefresh, err = refreshToken.SignedString(viper.GetString("jwt.accessToken.secret"))
 	if err != nil {
+		logger.Errorf("generate refresh token err: %v", err)
 		return
 	}
 
 	err = db.Orm().Transaction(func(tx *gorm.DB) (err error) {
-		// create access token todo
+		err = tx.Create(&models.Token{
+			UserId:    accessClaims.UserId,
+			Username:  accessClaims.Username,
+			JwtId:     accessClaims.ID,
+			IssuedAt:  accessClaims.IssuedAt.Unix(),
+			ExpiresAt: accessClaims.ExpiresAt.Unix(),
+			Status:    models.TokenStatusValid,
+			Type:      models.AccessToken,
+		}).Error
+		if err != nil {
+			logger.Errorf("create access token err: %v", err)
+			return
+		}
 
-		// create refresh token todo
+		err = tx.Create(&models.Token{
+			JwtId:     refreshClaims.ID,
+			IssuedAt:  refreshClaims.IssuedAt.Unix(),
+			ExpiresAt: refreshClaims.ExpiresAt.Unix(),
+			Status:    models.TokenStatusValid,
+			Type:      models.RefreshToken,
+		}).Error
+		if err != nil {
+			logger.Errorf("create refresh token err: %v", err)
+			return
+		}
 
 		return
 	})

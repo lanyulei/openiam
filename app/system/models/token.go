@@ -22,7 +22,6 @@ type Token struct {
 	JwtId     string      `json:"jwt_id" gorm:"column:jwt_id;type:varchar(128);not null;comment:JWT ID"`
 	IssuedAt  int64       `json:"issued_at" gorm:"column:issued_at;type:bigint;not null;comment:签发时间"`
 	ExpiresAt int64       `json:"expires_at" gorm:"column:expires_at;type:bigint;not null;comment:过期时间"`
-	Content   string      `json:"content" gorm:"column:content;type:text;not null;comment:令牌内容"`
 	Status    TokenStatus `json:"status" gorm:"column:status;type:varchar(32);not null;comment:令牌状态"`
 	Type      TokenType   `json:"type" gorm:"column:type;type:varchar(32);not null;comment:令牌类型"`
 	models.BaseModel

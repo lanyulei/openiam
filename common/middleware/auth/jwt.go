@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"encoding/json"
 	"openiam/pkg/jwtauth"
 	"openiam/pkg/tools/respstatus"
 	"strings"
@@ -33,15 +32,4 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		c.Set("userId", mc.UserId)
 		c.Next() // 后续的处理函数可以用过c.Get("username")来获取当前请求的用户信息
 	}
-}
-
-func isJSONValid(data []byte) bool {
-	var raw json.RawMessage
-
-	// 尝试将数据解析为 json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return false
-	}
-
-	return true
 }
