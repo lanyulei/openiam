@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"github.com/lanyulei/toolkit/db"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -51,7 +53,7 @@ func GenerateTokens(userId int, username string) (result *TokenPair, err error) 
 	accessToken = jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
 	signedAccess, err = accessToken.SignedString(viper.GetString("jwt.accessToken.secret"))
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	// Refresh Token（不包含用户敏感信息）
@@ -68,13 +70,19 @@ func GenerateTokens(userId int, username string) (result *TokenPair, err error) 
 	refreshToken = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
 	signedRefresh, err = refreshToken.SignedString(viper.GetString("jwt.accessToken.secret"))
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	// 存储Refresh Token到数据库（需要实现）
-	//if err := storeRefreshToken(userId, refreshClaims.ID, refreshClaims.ExpiresAt.Time); err != nil {
-	//	return nil, err
-	//}
+	err = db.Orm().Transaction(func(tx *gorm.DB) (err error) {
+		// create access token todo
+
+		// create refresh token todo
+
+		return
+	})
+	if err != nil {
+		return
+	}
 
 	return &TokenPair{
 		AccessToken:  signedAccess,
