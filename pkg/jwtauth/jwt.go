@@ -8,7 +8,6 @@ import (
 	"github.com/lanyulei/toolkit/db"
 	"github.com/lanyulei/toolkit/logger"
 	"github.com/spf13/viper"
-	"gorm.io/gorm"
 	"openiam/app/system/models"
 	"time"
 )
@@ -35,9 +34,29 @@ func GenerateTokens(userId string, username string) (result *TokenPair, err erro
 		now                         = time.Now()
 		jti                         = uuid.New().String()
 		issuer                      = viper.GetString("jwt.issuer")
-		accessToken, refreshToken   *jwt.Token
-		refreshClaims               *RefreshClaims
 		signedAccess, signedRefresh string
+	)
+
+	signedAccess, err = GenerateAccessTokens(jti, userId, username, issuer, now)
+	if err != nil {
+		return
+	}
+
+	signedRefresh, err = GenerateRefreshTokens(jti, issuer, now)
+	if err != nil {
+		return
+	}
+
+	return &TokenPair{
+		AccessToken:  signedAccess,
+		RefreshToken: signedRefresh,
+	}, nil
+}
+
+// GenerateAccessTokens 生成访问令牌
+func GenerateAccessTokens(jti, userId, username, issuer string, now time.Time) (result string, err error) {
+	var (
+		accessToken *jwt.Token
 	)
 
 	// Access Token
@@ -53,14 +72,33 @@ func GenerateTokens(userId string, username string) (result *TokenPair, err erro
 	}
 
 	accessToken = jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
-	signedAccess, err = accessToken.SignedString(viper.GetString("jwt.accessToken.secret"))
+	result, err = accessToken.SignedString(viper.GetString("jwt.accessToken.secret"))
 	if err != nil {
 		logger.Errorf("jwt sign access token err: %v", err)
 		return
 	}
 
+	err = db.Orm().Create(&models.Token{
+		UserId:    accessClaims.UserId,
+		Username:  accessClaims.Username,
+		JwtId:     accessClaims.ID,
+		IssuedAt:  accessClaims.IssuedAt.Unix(),
+		ExpiresAt: accessClaims.ExpiresAt.Unix(),
+		Status:    models.TokenStatusValid,
+		Type:      models.AccessToken,
+	}).Error
+	if err != nil {
+		logger.Errorf("create access token err: %v", err)
+		return
+	}
+
+	return
+}
+
+// GenerateRefreshTokens 生成刷新令牌
+func GenerateRefreshTokens(jti, issuer string, now time.Time) (result string, err error) {
 	// Refresh Token（不包含用户敏感信息）
-	refreshClaims = &RefreshClaims{
+	refreshClaims := &RefreshClaims{
 		jti: jti,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(time.Duration(viper.GetInt("jwt.refreshToken.expires")) * time.Hour)),
@@ -70,51 +108,26 @@ func GenerateTokens(userId string, username string) (result *TokenPair, err erro
 		},
 	}
 
-	refreshToken = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
-	signedRefresh, err = refreshToken.SignedString(viper.GetString("jwt.accessToken.secret"))
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
+	result, err = refreshToken.SignedString(viper.GetString("jwt.accessToken.secret"))
 	if err != nil {
 		logger.Errorf("generate refresh token err: %v", err)
 		return
 	}
 
-	err = db.Orm().Transaction(func(tx *gorm.DB) (err error) {
-		err = tx.Create(&models.Token{
-			UserId:    accessClaims.UserId,
-			Username:  accessClaims.Username,
-			JwtId:     accessClaims.ID,
-			IssuedAt:  accessClaims.IssuedAt.Unix(),
-			ExpiresAt: accessClaims.ExpiresAt.Unix(),
-			Status:    models.TokenStatusValid,
-			Type:      models.AccessToken,
-		}).Error
-		if err != nil {
-			logger.Errorf("create access token err: %v", err)
-			return
-		}
-
-		err = tx.Create(&models.Token{
-			JwtId:     refreshClaims.ID,
-			IssuedAt:  refreshClaims.IssuedAt.Unix(),
-			ExpiresAt: refreshClaims.ExpiresAt.Unix(),
-			Status:    models.TokenStatusValid,
-			Type:      models.RefreshToken,
-		}).Error
-		if err != nil {
-			logger.Errorf("create refresh token err: %v", err)
-			return
-		}
-
-		return
-	})
+	err = db.Orm().Create(&models.Token{
+		JwtId:     refreshClaims.ID,
+		IssuedAt:  refreshClaims.IssuedAt.Unix(),
+		ExpiresAt: refreshClaims.ExpiresAt.Unix(),
+		Status:    models.TokenStatusValid,
+		Type:      models.RefreshToken,
+	}).Error
 	if err != nil {
+		logger.Errorf("create refresh token err: %v", err)
 		return
 	}
 
-	return &TokenPair{
-		AccessToken:  signedAccess,
-		RefreshToken: signedRefresh,
-		ExpiresAt:    accessClaims.ExpiresAt.Unix(),
-	}, nil
+	return
 }
 
 // ParseToken 解析JWT

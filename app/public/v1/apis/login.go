@@ -9,3 +9,7 @@ import (
 func Login(c *gin.Context) {
 	response.OK(c, "", "")
 }
+
+func RefreshToken(c *gin.Context) {
+	response.OK(c, "", "")
+}
