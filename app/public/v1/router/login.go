@@ -12,4 +12,5 @@ import (
 
 func LoginRouter(g *gin.RouterGroup) {
 	g.POST("/login", apis.Login)
+	g.POST("/refresh-token", apis.RefreshToken)
 }
