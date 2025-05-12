@@ -1,7 +1,7 @@
 package router
 
 import (
-	"openiam/app/public/v1/apis"
+	"openiam/app/public/v1/api"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +11,6 @@ import (
 */
 
 func LoginRouter(g *gin.RouterGroup) {
-	g.POST("/login", apis.Login)
-	g.POST("/refresh-token", apis.RefreshToken)
+	g.POST("/login", api.Login)
+	g.POST("/refresh-token", api.RefreshToken)
 }

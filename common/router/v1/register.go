@@ -13,7 +13,5 @@ import (
 
 func RegisterRouter(g *gin.RouterGroup) {
 	routers.RegisterPublicRouter(g) // 公共接口路由，非业务相关路由
-}
-
-func MicroServiceRouter(g *gin.Engine) {
+	routers.RegisterSystemRouter(g) // 系统管理路由
 }

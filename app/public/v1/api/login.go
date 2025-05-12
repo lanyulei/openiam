@@ -1,4 +1,4 @@
-package apis
+package api
 
 import (
 	"encoding/base64"
@@ -32,19 +32,19 @@ func Login(c *gin.Context) {
 	// 查询用户信息
 	err = db.Orm().Model(&models.User{}).Where("username = ?", params.Username).First(&userInfo).Error
 	if err != nil {
-		response.Error(c, err, respstatus.InvalidParamsError)
+		response.Error(c, err, respstatus.GetUserError)
 		return
 	}
 
 	decodedPassword, err = base64.StdEncoding.DecodeString(params.Password)
 	if err != nil {
-		err = fmt.Errorf("decode password error: %v", err)
+		response.Error(c, fmt.Errorf("decode password error: %v", err), respstatus.DecodedPasswordError)
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(userInfo.Password), decodedPassword)
 	if err != nil {
-		err = fmt.Errorf("password error: %v", err)
+		response.Error(c, fmt.Errorf("password error: %v", err), respstatus.CompareHashAndPasswordError)
 		return
 	}
 
