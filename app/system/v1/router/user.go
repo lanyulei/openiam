@@ -10,7 +10,7 @@ func UserRouter(g *gin.RouterGroup) {
 	{
 		router.GET("", api.UserList)
 		router.POST("", api.CreateUser)
-		router.PUT("", api.UpdateUser)
-		router.DELETE("", api.DeleteUser)
+		router.PUT("/:id", api.UpdateUser)
+		router.DELETE("/:id", api.DeleteUser)
 	}
 }

@@ -22,7 +22,7 @@ func DecodePassword(password string) (result string, err error) {
 		return
 	}
 
-	result = string(passwd)[:len(string(passwd))-SaltNumber] // 去盐
+	result = string(passwd)
 
 	return
 }

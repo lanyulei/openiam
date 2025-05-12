@@ -14,16 +14,11 @@ import (
 func UserList(c *gin.Context) {
 	var (
 		err      error
-		userList []*struct {
-			models.User
-			DepartmentName string `json:"department_name"`
-		}
-		result interface{}
+		userList []*models.User
+		result   interface{}
 	)
 
-	dbConn := db.Orm().Model(&models.User{}).
-		Select("system_user.*, system_department.name as department_name").
-		Joins("left join system_department on system_department.id = system_user.department")
+	dbConn := db.Orm().Model(&models.User{})
 
 	result, err = pagination.Paging(&pagination.Param{
 		C:  c,
@@ -75,7 +70,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	response.OK(c, "", "")
+	response.OK(c, user, "")
 }
 
 // UpdateUser 更新用户
@@ -107,13 +102,22 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	err = db.Orm().Model(&models.User{}).Where("id = ?", user.Id).Updates(&user).Error
+	err = db.Orm().Model(&models.User{}).Where("id = ?", userId).Updates(map[string]interface{}{
+		"username": user.Username,
+		"nickname": user.Nickname,
+		"avatar":   user.Avatar,
+		"tel":      user.Tel,
+		"email":    user.Email,
+		"status":   user.Status,
+		"is_admin": user.IsAdmin,
+		"remark":   user.Remark,
+	}).Error
 	if err != nil {
 		response.Error(c, err, respstatus.UpdateUserError)
 		return
 	}
 
-	response.OK(c, "", "")
+	response.OK(c, user, "")
 }
 
 // DeleteUser 删除用户
