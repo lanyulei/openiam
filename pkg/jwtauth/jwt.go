@@ -26,7 +26,6 @@ type RefreshClaims struct {
 type TokenPair struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
-	ExpiresAt    int64  `json:"expires_at"`
 }
 
 func GenerateTokens(userId string, username string) (result *TokenPair, err error) {

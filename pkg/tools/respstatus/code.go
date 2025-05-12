@@ -16,4 +16,5 @@ var (
 	UpdateUserError             = response.Response{Code: 40006, Message: "更新用户失败"}
 	DecodedPasswordError        = response.Response{Code: 40007, Message: "解密密码失败"}
 	CompareHashAndPasswordError = response.Response{Code: 40008, Message: "密码错误"}
+	GenerateTokenError          = response.Response{Code: 40009, Message: "生成 token 失败"}
 )
