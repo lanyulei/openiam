@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/base64"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"
@@ -22,9 +21,8 @@ func Login(c *gin.Context) {
 			Username string `json:"username" binding:"required"`
 			Password string `json:"password" binding:"required"`
 		}
-		decodedPassword []byte
-		userInfo        models.User
-		token           *jwtauth.TokenPair
+		userInfo models.User
+		token    *jwtauth.TokenPair
 	)
 
 	err = c.ShouldBindJSON(&params)
@@ -40,13 +38,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	decodedPassword, err = base64.StdEncoding.DecodeString(params.Password)
-	if err != nil {
-		response.Error(c, fmt.Errorf("decode password error: %v", err), respstatus.DecodedPasswordError)
-		return
-	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(userInfo.Password), decodedPassword)
+	err = bcrypt.CompareHashAndPassword([]byte(userInfo.Password), []byte(params.Password))
 	if err != nil {
 		response.Error(c, fmt.Errorf("password error: %v", err), respstatus.CompareHashAndPasswordError)
 		return

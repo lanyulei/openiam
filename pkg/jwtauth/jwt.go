@@ -71,7 +71,7 @@ func GenerateAccessTokens(jti, userId, username, issuer string, now time.Time) (
 	}
 
 	accessToken = jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
-	result, err = accessToken.SignedString(viper.GetString("jwt.accessToken.secret"))
+	result, err = accessToken.SignedString([]byte(viper.GetString("jwt.accessToken.secret")))
 	if err != nil {
 		logger.Errorf("jwt sign access token err: %v", err)
 		return
@@ -108,7 +108,7 @@ func GenerateRefreshTokens(jti, issuer string, now time.Time) (result string, er
 	}
 
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
-	result, err = refreshToken.SignedString(viper.GetString("jwt.accessToken.secret"))
+	result, err = refreshToken.SignedString([]byte(viper.GetString("jwt.accessToken.secret")))
 	if err != nil {
 		logger.Errorf("generate refresh token err: %v", err)
 		return

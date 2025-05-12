@@ -1,6 +1,10 @@
 package models
 
-import "openiam/common/models"
+import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+	"openiam/common/models"
+)
 
 type TokenStatus string
 
@@ -27,6 +31,11 @@ type Token struct {
 	models.BaseModel
 }
 
-func (Token) TableName() string {
+func (t *Token) TableName() string {
 	return "system_token"
+}
+
+func (t *Token) BeforeCreate(tx *gorm.DB) (err error) {
+	t.Id = uuid.New().String()
+	return
 }

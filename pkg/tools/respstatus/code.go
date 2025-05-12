@@ -17,4 +17,5 @@ var (
 	DecodedPasswordError        = response.Response{Code: 40007, Message: "解密密码失败"}
 	CompareHashAndPasswordError = response.Response{Code: 40008, Message: "密码错误"}
 	GenerateTokenError          = response.Response{Code: 40009, Message: "生成 token 失败"}
+	PasswordEmptyError          = response.Response{Code: 40010, Message: "密码不能为空"}
 )

@@ -1,6 +1,10 @@
 package models
 
-import "openiam/common/models"
+import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+	"openiam/common/models"
+)
 
 /*
   @Author : lanyulei
@@ -14,6 +18,11 @@ type Migrate struct {
 	models.BaseModel
 }
 
-func (Migrate) TableName() string {
+func (m *Migrate) TableName() string {
 	return "system_migrate"
+}
+
+func (m *Migrate) BeforeCreate(tx *gorm.DB) (err error) {
+	m.Id = uuid.New().String()
+	return
 }

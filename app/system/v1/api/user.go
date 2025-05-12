@@ -35,8 +35,11 @@ func UserList(c *gin.Context) {
 // CreateUser 创建用户
 func CreateUser(c *gin.Context) {
 	var (
-		err   error
-		user  models.User
+		err  error
+		user struct {
+			models.User
+			Password string `json:"password" binding:"required"`
+		}
 		count int64
 	)
 
@@ -55,6 +58,11 @@ func CreateUser(c *gin.Context) {
 
 	if count > 0 {
 		response.Error(c, err, respstatus.UsernameExistError)
+		return
+	}
+
+	if user.Password == "" {
+		response.Error(c, err, respstatus.PasswordEmptyError)
 		return
 	}
 
