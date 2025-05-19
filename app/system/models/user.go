@@ -1,9 +1,10 @@
 package models
 
 import (
+	"openiam/common/models"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"openiam/common/models"
 )
 
 type User struct {

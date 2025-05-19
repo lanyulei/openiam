@@ -2,15 +2,16 @@ package api
 
 import (
 	"fmt"
+	"openiam/app/system/models"
+	"openiam/pkg/jwtauth"
+	"openiam/pkg/tools/respstatus"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"
 	"github.com/lanyulei/toolkit/response"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
-	"openiam/app/system/models"
-	"openiam/pkg/jwtauth"
-	"openiam/pkg/tools/respstatus"
-	"time"
 )
 
 // Login 登陆

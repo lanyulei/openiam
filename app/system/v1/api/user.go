@@ -1,13 +1,14 @@
 package api
 
 import (
+	"openiam/app/system/models"
+	"openiam/pkg/password"
+	"openiam/pkg/tools/respstatus"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"
 	"github.com/lanyulei/toolkit/pagination"
 	"github.com/lanyulei/toolkit/response"
-	"openiam/app/system/models"
-	"openiam/pkg/password"
-	"openiam/pkg/tools/respstatus"
 )
 
 // UserList 用户列表
@@ -144,4 +145,41 @@ func DeleteUser(c *gin.Context) {
 	}
 
 	response.OK(c, "", "")
+}
+
+// UserDetailByUserId 用户详情
+func UserDetailByUserId(c *gin.Context) {
+	var (
+		err    error
+		userId string
+		user   models.User
+	)
+
+	userId = c.Param("id")
+
+	err = db.Orm().Model(&models.User{}).Where("id = ?", userId).First(&user).Error
+	if err != nil {
+		response.Error(c, err, respstatus.UserDetailError)
+		return
+	}
+
+	response.OK(c, user, "")
+}
+
+// UserDetail 用户详情
+func UserDetail(c *gin.Context) {
+	var (
+		err    error
+		userId string
+		user   models.User
+	)
+
+	userId = c.GetString("userId")
+
+	err = db.Orm().Model(&models.User{}).Where("id = ?", userId).First(&user).Error
+	if err != nil {
+		response.Error(c, err, respstatus.UserDetailError)
+		return
+	}
+	response.OK(c, user, "")
 }
