@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"openiam/app/system/models"
 	"openiam/pkg/respstatus"
 
@@ -94,13 +95,28 @@ func MenuTree(c *gin.Context) {
 // CreateMenu 创建菜单
 func CreateMenu(c *gin.Context) {
 	var (
-		err  error
-		menu models.Menu
+		err   error
+		menu  models.Menu
+		count int64
 	)
 
 	err = c.ShouldBindJSON(&menu)
 	if err != nil {
 		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
+
+	// path 和 name 不能重复
+	err = db.Orm().Model(&models.Menu{}).
+		Where("path = ? OR name = ?", menu.Path, menu.Name).
+		Count(&count).Error
+	if err != nil {
+		response.Error(c, err, respstatus.GetMenuError)
+		return
+	}
+
+	if count > 0 {
+		response.Error(c, fmt.Errorf("path already exists"), respstatus.PathAlreadyExistsError)
 		return
 	}
 
@@ -113,8 +129,8 @@ func CreateMenu(c *gin.Context) {
 	response.OK(c, menu, "")
 }
 
-// MenuDetail 获取菜单详情
-func MenuDetail(c *gin.Context) {
+// MenuDetailByMenuId 获取菜单详情
+func MenuDetailByMenuId(c *gin.Context) {
 	var (
 		err  error
 		id   = c.Param("id")
@@ -135,14 +151,29 @@ func MenuDetail(c *gin.Context) {
 // UpdateMenu 更新菜单
 func UpdateMenu(c *gin.Context) {
 	var (
-		err  error
-		id   = c.Param("id")
-		menu models.Menu
+		err   error
+		id    = c.Param("id")
+		menu  models.Menu
+		count int64
 	)
 
 	err = c.ShouldBindJSON(&menu)
 	if err != nil {
 		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
+
+	// path 和 name 不能重复, 排除自己
+	err = db.Orm().Model(&models.Menu{}).
+		Where("(path =? OR name =?) AND id !=?", menu.Path, menu.Name, id).
+		Count(&count).Error
+	if err != nil {
+		response.Error(c, err, respstatus.GetMenuError)
+		return
+	}
+
+	if count > 0 {
+		response.Error(c, fmt.Errorf("path already exists"), respstatus.PathAlreadyExistsError)
 		return
 	}
 

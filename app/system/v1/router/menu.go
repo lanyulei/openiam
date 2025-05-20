@@ -10,5 +10,10 @@ func MenuRouter(g *gin.RouterGroup) {
 	router := g.Group("/menu")
 	{
 		router.GET("", api.MenuList)
+		router.POST("", api.CreateMenu)
+		router.PUT("/:id", api.UpdateMenu)
+		router.DELETE("/:id", api.DeleteMenu)
+		router.GET("/:id", api.MenuDetailByMenuId)
+		router.GET("/tree", api.MenuTree)
 	}
 }
