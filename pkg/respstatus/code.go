@@ -20,5 +20,10 @@ var (
 	PasswordEmptyError          = response.Response{Code: 40010, Message: "密码不能为空"}
 	UserDetailError             = response.Response{Code: 40011, Message: "获取用户详情失败"}
 
-	GetMenuError = response.Response{Code: 50001, Message: "获取菜单失败"}
+	GetMenuError        = response.Response{Code: 40101, Message: "获取菜单失败"}
+	CreateMenuError     = response.Response{Code: 40102, Message: "创建菜单失败"}
+	GetMenuDetailsError = response.Response{Code: 40103, Message: "获取菜单详情失败"}
+	UpdateMenuError     = response.Response{Code: 40104, Message: "更新菜单失败"}
+	DeleteMenuError     = response.Response{Code: 40105, Message: "删除菜单失败"}
+	GetMenuListError    = response.Response{Code: 40106, Message: "获取菜单列表失败"}
 )

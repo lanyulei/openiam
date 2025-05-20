@@ -6,11 +6,30 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"
+	"github.com/lanyulei/toolkit/pagination"
 	"github.com/lanyulei/toolkit/response"
 )
 
+// MenuList 获取菜单列表
 func MenuList(c *gin.Context) {
-	response.OK(c, "", "")
+	var (
+		err      error
+		menuList []*models.Menu
+		result   interface{}
+	)
+
+	dbConn := db.Orm().Model(&models.Menu{})
+
+	result, err = pagination.Paging(&pagination.Param{
+		C:  c,
+		DB: dbConn,
+	}, &menuList)
+	if err != nil {
+		response.Error(c, err, respstatus.GetMenuListError)
+		return
+	}
+
+	response.OK(c, result, "")
 }
 
 func MenuTree(c *gin.Context) {
@@ -70,4 +89,88 @@ func MenuTree(c *gin.Context) {
 	}
 
 	response.OK(c, result, "")
+}
+
+// CreateMenu 创建菜单
+func CreateMenu(c *gin.Context) {
+	var (
+		err  error
+		menu models.Menu
+	)
+
+	err = c.ShouldBindJSON(&menu)
+	if err != nil {
+		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
+
+	err = db.Orm().Create(&menu).Error
+	if err != nil {
+		response.Error(c, err, respstatus.CreateMenuError)
+		return
+	}
+
+	response.OK(c, menu, "")
+}
+
+// MenuDetail 获取菜单详情
+func MenuDetail(c *gin.Context) {
+	var (
+		err  error
+		id   = c.Param("id")
+		menu models.Menu
+	)
+
+	err = db.Orm().Model(&models.Menu{}).
+		Where("id = ?", id).
+		First(&menu).Error
+	if err != nil {
+		response.Error(c, err, respstatus.GetMenuDetailsError)
+		return
+	}
+
+	response.OK(c, menu, "")
+}
+
+// UpdateMenu 更新菜单
+func UpdateMenu(c *gin.Context) {
+	var (
+		err  error
+		id   = c.Param("id")
+		menu models.Menu
+	)
+
+	err = c.ShouldBindJSON(&menu)
+	if err != nil {
+		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
+
+	err = db.Orm().Model(&models.Menu{}).
+		Where("id = ?", id).
+		Updates(&menu).Error
+	if err != nil {
+		response.Error(c, err, respstatus.UpdateMenuError)
+		return
+	}
+
+	response.OK(c, menu, "")
+}
+
+// DeleteMenu 删除菜单
+func DeleteMenu(c *gin.Context) {
+	var (
+		err error
+		id  = c.Param("id")
+	)
+
+	err = db.Orm().Model(&models.Menu{}).
+		Where("id = ?", id).
+		Delete(&models.Menu{}).Error
+	if err != nil {
+		response.Error(c, err, respstatus.DeleteMenuError)
+		return
+	}
+
+	response.OK(c, "", "")
 }
