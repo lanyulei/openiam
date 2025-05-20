@@ -33,3 +33,24 @@ func (m *Menu) BeforeCreate(tx *gorm.DB) (err error) {
 	m.Id = uuid.New().String()
 	return
 }
+
+type MenuMeta struct {
+	Title       string `json:"title"`
+	Hyperlink   string `json:"hyperlink"`
+	IsHide      bool   `json:"isHide"`
+	IsKeepAlive bool   `json:"isKeepAlive"`
+	IsAffix     bool   `json:"isAffix"`
+	IsIframe    bool   `json:"isIframe"`
+	Icon        string `json:"icon"`
+}
+
+type MenuTree struct {
+	Id        string      `json:"id"`
+	Name      string      `json:"name"`
+	Path      string      `json:"path"`
+	Component string      `json:"component"`
+	ParentId  string      `json:"parentId"`
+	Redirect  string      `json:"redirect"`
+	Meta      MenuMeta    `json:"meta"`
+	Children  []*MenuTree `json:"children"`
+}

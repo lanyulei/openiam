@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"openiam/app/system/models"
 	"openiam/pkg/jwtauth"
-	"openiam/pkg/tools/respstatus"
+	"openiam/pkg/respstatus"
 	"time"
 
 	"github.com/gin-gonic/gin"

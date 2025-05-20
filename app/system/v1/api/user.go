@@ -3,7 +3,7 @@ package api
 import (
 	"openiam/app/system/models"
 	"openiam/pkg/password"
-	"openiam/pkg/tools/respstatus"
+	"openiam/pkg/respstatus"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"

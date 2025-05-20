@@ -2,7 +2,7 @@ package auth
 
 import (
 	"openiam/pkg/jwtauth"
-	"openiam/pkg/tools/respstatus"
+	"openiam/pkg/respstatus"
 	"strings"
 
 	"github.com/gin-gonic/gin"

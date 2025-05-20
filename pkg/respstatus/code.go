@@ -19,4 +19,6 @@ var (
 	GenerateTokenError          = response.Response{Code: 40009, Message: "生成 token 失败"}
 	PasswordEmptyError          = response.Response{Code: 40010, Message: "密码不能为空"}
 	UserDetailError             = response.Response{Code: 40011, Message: "获取用户详情失败"}
+
+	GetMenuError = response.Response{Code: 50001, Message: "获取菜单失败"}
 )

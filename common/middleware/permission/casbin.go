@@ -2,7 +2,7 @@ package permission
 
 import (
 	"fmt"
-	"openiam/pkg/tools/respstatus"
+	"openiam/pkg/respstatus"
 	"time"
 
 	"github.com/casbin/casbin/v2"
