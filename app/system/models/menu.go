@@ -17,9 +17,10 @@ type Menu struct {
 	Title       string `json:"title" gorm:"column:title;type:varchar(128);comment:标题"`
 	Hyperlink   string `json:"hyperlink" gorm:"column:hyperlink;type:varchar(512);comment:超链接"`
 	IsHide      bool   `json:"is_hide" gorm:"column:is_hide;type:boolean;not null;default:false;comment:是否隐藏"`
-	IsKeepAlive bool   `json:"is_keep_alive" gorm:"column:is_keep_alive;type:boolean;not null;default:false;comment:是否缓存"`
+	IsKeepAlive bool   `json:"is_keep_alive" gorm:"column:is_keep_alive;type:boolean;not null;default:true;comment:是否缓存"`
 	IsAffix     bool   `json:"is_affix" gorm:"column:is_affix;type:boolean;not null;default:false;comment:是否固定"`
 	IsIframe    bool   `json:"is_iframe" gorm:"column:is_iframe;type:boolean;not null;default:false;comment:是否内嵌"`
+	IsVerify    bool   `json:"is_verify" gorm:"column:is_verify;type:boolean;not null;default:true;comment:是否验证"`
 	Sort        int    `json:"sort" gorm:"column:sort;type:integer;not null;default:0;comment:排序"`
 	Icon        string `json:"icon" gorm:"column:icon;type:varchar(128);comment:图标"`
 	models.BaseModel

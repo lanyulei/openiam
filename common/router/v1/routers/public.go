@@ -8,4 +8,5 @@ import (
 
 func RegisterPublicRouter(g *gin.RouterGroup) {
 	router.LoginRouter(g)
+	router.MenuRouter(g)
 }

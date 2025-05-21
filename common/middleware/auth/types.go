@@ -8,4 +8,8 @@ package auth
 const (
 	RequestMethodGet     = "GET"
 	RequestMethodOptions = "OPTIONS"
+
+	MiddlewareUsername = "username"
+	MiddlewareUserId   = "userId"
+	MiddlewareIsAdmin  = "isAdmin"
 )

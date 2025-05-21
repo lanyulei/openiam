@@ -19,6 +19,7 @@ var (
 	GenerateTokenError          = response.Response{Code: 40009, Message: "生成 token 失败"}
 	PasswordEmptyError          = response.Response{Code: 40010, Message: "密码不能为空"}
 	UserDetailError             = response.Response{Code: 40011, Message: "获取用户详情失败"}
+	UserNotFoundError           = response.Response{Code: 40012, Message: "用户不存在"}
 
 	GetMenuError           = response.Response{Code: 40101, Message: "获取菜单失败"}
 	CreateMenuError        = response.Response{Code: 40102, Message: "创建菜单失败"}
@@ -27,4 +28,5 @@ var (
 	DeleteMenuError        = response.Response{Code: 40105, Message: "删除菜单失败"}
 	GetMenuListError       = response.Response{Code: 40106, Message: "获取菜单列表失败"}
 	PathAlreadyExistsError = response.Response{Code: 40107, Message: "路径已存在"}
+	GetMenuTreeError       = response.Response{Code: 40108, Message: "获取菜单树失败"}
 )
