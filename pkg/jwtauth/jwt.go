@@ -3,13 +3,21 @@ package jwtauth
 import (
 	"errors"
 	"fmt"
+	"openiam/app/system/models"
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/lanyulei/toolkit/db"
 	"github.com/lanyulei/toolkit/logger"
 	"github.com/spf13/viper"
-	"openiam/app/system/models"
-	"time"
+)
+
+type ClaimType string
+
+const (
+	AccessClaim  ClaimType = "access"
+	RefreshClaim ClaimType = "refresh"
 )
 
 type Claims struct {
@@ -19,7 +27,7 @@ type Claims struct {
 }
 
 type RefreshClaims struct {
-	jti string
+	Jti string `json:"jti"`
 	jwt.RegisteredClaims
 }
 
@@ -98,7 +106,7 @@ func GenerateAccessTokens(jti, userId, username, issuer string, now time.Time) (
 func GenerateRefreshTokens(jti, issuer string, now time.Time) (result string, err error) {
 	// Refresh Token（不包含用户敏感信息）
 	refreshClaims := &RefreshClaims{
-		jti: jti,
+		Jti: jti,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(time.Duration(viper.GetInt("jwt.refreshToken.expires")) * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -129,9 +137,20 @@ func GenerateRefreshTokens(jti, issuer string, now time.Time) (result string, er
 	return
 }
 
-// ParseToken 解析JWT
-func ParseToken(tokenString, secret string) (*Claims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (i interface{}, err error) {
+// ParseToken 解析JWT，支持Claims和RefreshClaims两种类型
+func ParseToken(tokenString, secret string, claimType ClaimType) (interface{}, error) {
+	var claims jwt.Claims
+
+	switch claimType {
+	case AccessClaim:
+		claims = &Claims{}
+	case RefreshClaim:
+		claims = &RefreshClaims{}
+	default:
+		return nil, fmt.Errorf("unsupported claim type: %s", claimType)
+	}
+
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (i interface{}, err error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
@@ -140,7 +159,8 @@ func ParseToken(tokenString, secret string) (*Claims, error) {
 	if err != nil {
 		return nil, err
 	}
-	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+
+	if token.Valid {
 		return claims, nil
 	}
 	return nil, errors.New("invalid token")

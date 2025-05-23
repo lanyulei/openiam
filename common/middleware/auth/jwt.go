@@ -26,7 +26,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			return
 		}
 
-		mc, err := jwtauth.ParseToken(strings.TrimPrefix(authorization, "Bearer "), viper.GetString("jwt.accessToken.secret"))
+		mc, err := jwtauth.ParseToken(strings.TrimPrefix(authorization, "Bearer "), viper.GetString("jwt.accessToken.secret"), jwtauth.AccessClaim)
 		if err != nil {
 			response.Error(c, err, respstatus.InvalidTokenError)
 			c.Abort()
@@ -34,7 +34,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		}
 
 		// 查询当前用户
-		err = db.Orm().Model(&models.User{}).Where("id = ?", mc.UserId).First(&user).Error
+		err = db.Orm().Model(&models.User{}).Where("id = ?", mc.(*jwtauth.Claims).UserId).First(&user).Error
 		if err != nil {
 			response.Error(c, err, respstatus.UserNotFoundError)
 			c.Abort()
@@ -42,8 +42,8 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		}
 
 		// 将当前请求的username信息保存到请求的上下文c上
-		c.Set(MiddlewareUsername, mc.Username)
-		c.Set(MiddlewareUserId, mc.UserId)
+		c.Set(MiddlewareUsername, mc.(*jwtauth.Claims).Username)
+		c.Set(MiddlewareUserId, mc.(*jwtauth.Claims).UserId)
 		c.Set(MiddlewareIsAdmin, user.IsAdmin)
 		c.Next() // 后续的处理函数可以用过c.Get("username")来获取当前请求的用户信息
 	}
