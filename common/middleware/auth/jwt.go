@@ -16,7 +16,8 @@ import (
 func JWTAuthMiddleware() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var (
-			user models.User
+			user  models.User
+			token models.Token
 		)
 
 		authorization := c.GetHeader("Authorization")
@@ -29,6 +30,21 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		mc, err := jwtauth.ParseToken(strings.TrimPrefix(authorization, "Bearer "), viper.GetString("jwt.accessToken.secret"), jwtauth.AccessClaim)
 		if err != nil {
 			response.Error(c, err, respstatus.InvalidTokenError)
+			c.Abort()
+			return
+		}
+
+		// 检查token是否在数据库中存在
+		err = db.Orm().Model(&models.Token{}).Where("jwt_id = ?", mc.(*jwtauth.Claims).ID).First(&token).Error
+		if err != nil {
+			response.Error(c, err, respstatus.TokenNotFoundError)
+			c.Abort()
+			return
+		}
+
+		// 检查 token 是否有效
+		if token.Status != models.TokenStatusValid {
+			response.Error(c, nil, respstatus.TokenInvalidError)
 			c.Abort()
 			return
 		}

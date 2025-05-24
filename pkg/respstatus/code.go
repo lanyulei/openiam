@@ -9,6 +9,8 @@ var (
 	InvalidParamsError     = response.Response{Code: 30005, Message: "请求参数错误"}
 	GetRefreshTokenError   = response.Response{Code: 30006, Message: "获取刷新令牌失败"}
 	ParseRefreshTokenError = response.Response{Code: 30007, Message: "解析刷新令牌失败"}
+	TokenNotFoundError     = response.Response{Code: 30008, Message: "令牌不存在"}
+	TokenInvalidError      = response.Response{Code: 30009, Message: "令牌无效"}
 
 	UserListError               = response.Response{Code: 40001, Message: "获取用户列表失败"}
 	GetUserError                = response.Response{Code: 40002, Message: "获取用户失败"}
