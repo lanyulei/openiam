@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"openiam/app/system/models"
+	"openiam/common/middleware/auth"
 	"openiam/pkg/jwtauth"
 	"openiam/pkg/respstatus"
 
@@ -50,4 +51,23 @@ func Login(c *gin.Context) {
 	}
 
 	response.OK(c, token.AccessToken, "")
+}
+
+// Logout 登出
+func Logout(c *gin.Context) {
+	var (
+		err error
+	)
+
+	userId := c.GetString(auth.MiddlewareUserId)
+
+	err = db.Orm().Model(&models.Token{}).
+		Where("user_id = ?", userId).
+		Update("status", models.TokenStatusInvalid).Error
+	if err != nil {
+		response.Error(c, err, respstatus.InvalidTokenError)
+		return
+	}
+
+	response.OK(c, nil, "")
 }
