@@ -32,16 +32,15 @@ type RefreshClaims struct {
 }
 
 type TokenPair struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
+	AccessToken string `json:"access_token"`
 }
 
 func GenerateTokens(userId string, username string) (result *TokenPair, err error) {
 	var (
-		now                         = time.Now()
-		jti                         = uuid.New().String()
-		issuer                      = viper.GetString("jwt.issuer")
-		signedAccess, signedRefresh string
+		now          = time.Now()
+		jti          = uuid.New().String()
+		issuer       = viper.GetString("jwt.issuer")
+		signedAccess string
 	)
 
 	signedAccess, err = GenerateAccessTokens(jti, userId, username, issuer, now)
@@ -49,14 +48,8 @@ func GenerateTokens(userId string, username string) (result *TokenPair, err erro
 		return
 	}
 
-	signedRefresh, err = GenerateRefreshTokens(jti, issuer, now)
-	if err != nil {
-		return
-	}
-
 	return &TokenPair{
-		AccessToken:  signedAccess,
-		RefreshToken: signedRefresh,
+		AccessToken: signedAccess,
 	}, nil
 }
 

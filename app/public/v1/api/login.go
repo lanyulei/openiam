@@ -5,12 +5,10 @@ import (
 	"openiam/app/system/models"
 	"openiam/pkg/jwtauth"
 	"openiam/pkg/respstatus"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"
 	"github.com/lanyulei/toolkit/response"
-	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -51,19 +49,5 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie(
-		"refresh_token",
-		token.RefreshToken,
-		int((time.Duration(viper.GetInt("jwt.refreshToken.expires")) * time.Hour).Seconds()), // 过期时间
-		"/refresh-token", // 有效路径
-		"",               // 域名
-		false,            // 仅HTTPS
-		true,             // HttpOnly
-	)
-
 	response.OK(c, token.AccessToken, "")
-}
-
-func RefreshToken(c *gin.Context) {
-	response.OK(c, "", "")
 }
