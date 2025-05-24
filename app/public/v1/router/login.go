@@ -13,5 +13,8 @@ import (
 
 func LoginRouter(g *gin.RouterGroup) {
 	g.POST("/login", api.Login)
-	g.POST("/logout", api.Logout, auth.JWTAuthMiddleware())
+	logoutRouter := g.Group("/logout", auth.JWTAuthMiddleware())
+	{
+		logoutRouter.POST("", api.Logout)
+	}
 }

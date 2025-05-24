@@ -44,7 +44,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 
 		// 检查 token 是否有效
 		if token.Status != models.TokenStatusValid {
-			response.Error(c, nil, respstatus.TokenInvalidError)
+			response.Error(c, nil, respstatus.InvalidTokenError)
 			c.Abort()
 			return
 		}
