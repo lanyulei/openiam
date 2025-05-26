@@ -6,5 +6,4 @@ var SystemModels = []interface{}{
 	&models.Migrate{},
 	&models.Token{},
 	&models.User{},
-	&models.Menu{},
 }
