@@ -3,7 +3,7 @@ package dingtalk
 import (
 	"encoding/json"
 	"fmt"
-	"openiam/pkg/notify/commom"
+	"openops/pkg/notify/commom"
 	"time"
 
 	"github.com/guonaihong/gout"

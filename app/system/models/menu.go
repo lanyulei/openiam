@@ -1,7 +1,7 @@
 package models
 
 import (
-	"openiam/common/models"
+	"openops/common/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

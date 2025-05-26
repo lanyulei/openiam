@@ -1,8 +1,8 @@
 package router
 
 import (
-	"openiam/app/public/v1/api"
-	"openiam/common/middleware/auth"
+	"openops/app/public/v1/api"
+	"openops/common/middleware/auth"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,7 +1,7 @@
 package notification
 
 import (
-	"openiam/pkg/notify/sender/wecom"
+	"openops/pkg/notify/sender/wecom"
 
 	"github.com/lanyulei/toolkit/logger"
 

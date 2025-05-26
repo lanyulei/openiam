@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"openiam/pkg/notify/commom"
+	"openops/pkg/notify/commom"
 
 	"github.com/spf13/viper"
 

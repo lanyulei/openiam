@@ -1,4 +1,4 @@
-module openiam
+module openops
 
 go 1.23.0
 

@@ -3,18 +3,18 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"openiam/cmd/migrate"
-	"openiam/cmd/server"
+	"openops/cmd/migrate"
+	"openops/cmd/server"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
-	Use:          "openiam",
-	Short:        "openiam",
+	Use:          "openops",
+	Short:        "openops",
 	SilenceUsage: true,
-	Long:         `openiam`,
+	Long:         `openops`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			tip()
@@ -34,7 +34,7 @@ func init() {
 }
 
 func tip() {
-	usageStr := `欢迎使用 openiam 管理系统，可以使用 -h 查看命令帮助`
+	usageStr := `欢迎使用 openops 管理系统，可以使用 -h 查看命令帮助`
 	fmt.Printf("%s\n", usageStr)
 }
 

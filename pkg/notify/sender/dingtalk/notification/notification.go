@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"openiam/pkg/notify/sender/dingtalk"
+	"openops/pkg/notify/sender/dingtalk"
 
 	"github.com/spf13/viper"
 

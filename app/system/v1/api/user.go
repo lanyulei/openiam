@@ -1,9 +1,9 @@
 package api
 
 import (
-	"openiam/app/system/models"
-	"openiam/pkg/password"
-	"openiam/pkg/respstatus"
+	"openops/app/system/models"
+	"openops/pkg/password"
+	"openops/pkg/respstatus"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"openiam/common/router"
-	"openiam/pkg/config"
-	"openiam/pkg/tools"
+	"openops/common/router"
+	"openops/pkg/config"
+	"openops/pkg/tools"
 	"os"
 	"os/signal"
 	"syscall"
@@ -27,7 +27,7 @@ var (
 	StartCmd  = &cobra.Command{
 		Use:          "server",
 		Short:        "start API server",
-		Example:      "openiam server -c config/settings.yaml",
+		Example:      "openops server -c config/settings.yaml",
 		SilenceUsage: true,
 		PreRun: func(cmd *cobra.Command, args []string) {
 			setup()

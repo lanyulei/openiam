@@ -2,9 +2,9 @@ package migrate
 
 import (
 	"fmt"
-	"openiam/app/system/models"
-	migrate "openiam/cmd/migrate/models"
-	"openiam/cmd/migrate/sql"
+	"openops/app/system/models"
+	migrate "openops/cmd/migrate/models"
+	"openops/cmd/migrate/sql"
 	"os"
 	"strconv"
 	"time"

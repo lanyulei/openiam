@@ -1,7 +1,7 @@
 package notification
 
 import (
-	"openiam/pkg/notify/sender/lark"
+	"openops/pkg/notify/sender/lark"
 
 	"github.com/lanyulei/toolkit/logger"
 

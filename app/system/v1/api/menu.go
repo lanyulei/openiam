@@ -2,9 +2,9 @@ package api
 
 import (
 	"fmt"
-	"openiam/app/system/models"
-	"openiam/pkg/respstatus"
-	"openiam/pkg/server"
+	"openops/app/system/models"
+	"openops/pkg/respstatus"
+	"openops/pkg/server"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"

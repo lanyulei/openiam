@@ -1,7 +1,7 @@
 package server
 
 import (
-	"openiam/app/system/models"
+	"openops/app/system/models"
 
 	"github.com/lanyulei/toolkit/db"
 )

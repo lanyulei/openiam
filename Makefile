@@ -12,6 +12,6 @@ redis:
 	@echo "redis 持久化数据目录: ${WORKDIR}/data/redis，默认密码：${PASSWORD}"
 build:
 	@echo "go build ."
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o openiam main.go && upx -9 openiam
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o openops main.go && upx -9 openops
 migrate: build
 	@echo "同步数据"

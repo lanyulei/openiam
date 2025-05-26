@@ -2,7 +2,7 @@ package router
 
 import (
 	"net/http"
-	v1 "openiam/common/router/v1"
+	v1 "openops/common/router/v1"
 	"time"
 
 	"github.com/lanyulei/toolkit/logger"

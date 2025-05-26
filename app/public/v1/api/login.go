@@ -2,10 +2,10 @@ package api
 
 import (
 	"fmt"
-	"openiam/app/system/models"
-	"openiam/common/middleware/auth"
-	"openiam/pkg/jwtauth"
-	"openiam/pkg/respstatus"
+	"openops/app/system/models"
+	"openops/common/middleware/auth"
+	"openops/pkg/jwtauth"
+	"openops/pkg/respstatus"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"

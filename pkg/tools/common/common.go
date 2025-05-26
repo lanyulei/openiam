@@ -1,7 +1,7 @@
 package common
 
 import (
-	"openiam/common/models"
+	"openops/common/models"
 	"regexp"
 
 	"github.com/spf13/viper"

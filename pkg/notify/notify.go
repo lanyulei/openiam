@@ -1,14 +1,14 @@
 package notify
 
 import (
-	"openiam/pkg/notify/commom"
-	dingtalkNotification "openiam/pkg/notify/sender/dingtalk/notification"
-	dingtalkWebhook "openiam/pkg/notify/sender/dingtalk/webhook"
-	"openiam/pkg/notify/sender/email"
-	larkNotification "openiam/pkg/notify/sender/lark/notification"
-	larkWebhook "openiam/pkg/notify/sender/lark/webhook"
-	wecomNotification "openiam/pkg/notify/sender/wecom/notification"
-	wecomWebhook "openiam/pkg/notify/sender/wecom/webhook"
+	"openops/pkg/notify/commom"
+	dingtalkNotification "openops/pkg/notify/sender/dingtalk/notification"
+	dingtalkWebhook "openops/pkg/notify/sender/dingtalk/webhook"
+	"openops/pkg/notify/sender/email"
+	larkNotification "openops/pkg/notify/sender/lark/notification"
+	larkWebhook "openops/pkg/notify/sender/lark/webhook"
+	wecomNotification "openops/pkg/notify/sender/wecom/notification"
+	wecomWebhook "openops/pkg/notify/sender/wecom/webhook"
 )
 
 /*

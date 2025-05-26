@@ -1,6 +1,6 @@
 package models
 
-import "openiam/app/system/models"
+import "openops/app/system/models"
 
 var SystemModels = []interface{}{
 	&models.Migrate{},

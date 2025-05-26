@@ -14,15 +14,15 @@ log:
   localTime: 1
   compress: 1
   console: 1
-  path: log/openiam.log
+  path: log/openops.log
 db:
   type: postgres
-  dsn: host=localhost user=postgres password=123456 dbname=openiam port=5432 sslmode=disable TimeZone=Asia/Shanghai
+  dsn: host=localhost user=postgres password=123456 dbname=openops port=5432 sslmode=disable TimeZone=Asia/Shanghai
   maxOpenConn: 20000
   maxIdleConn: 0
   connMaxLifetime: 60
 jwt:
-  issuer: openiam
+  issuer: openops
   accessToken:
     expires: 6000
     secret: 7c61aa49bd124736917207eb960cede9
@@ -41,7 +41,7 @@ casbin:
   intervalTime: 60
 notify:
   email:
-    alias: openiam
+    alias: openops
     host: smtp.qq.com
     port: 587
     user: xxx@qq.com

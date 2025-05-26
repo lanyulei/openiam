@@ -2,6 +2,7 @@ package migrate
 
 import (
 	"fmt"
+
 	"github.com/lanyulei/toolkit/db"
 	"github.com/lanyulei/toolkit/logger"
 	"github.com/spf13/cobra"
@@ -18,7 +19,7 @@ var (
 	StartCmd   = &cobra.Command{
 		Use:          "migrate",
 		Short:        "synchronous data structure",
-		Example:      "openiam migrate -c config/settings.yaml",
+		Example:      "openops migrate -c config/settings.yaml",
 		SilenceUsage: true,
 		PreRun: func(cmd *cobra.Command, args []string) {
 			setup()
@@ -69,7 +70,7 @@ func run() (err error) {
 		generateSQL()
 	} else {
 		fmt.Println("Enter the following command to view the help information:")
-		fmt.Println("  openiam migrate -h")
+		fmt.Println("  openops migrate -h")
 	}
 	return
 }

@@ -1,8 +1,8 @@
 package sql
 
 import (
-	"openiam/cmd/migrate/sql/statements/openiam"
-	"openiam/common/models"
+	"openops/cmd/migrate/sql/statements/openops"
+	"openops/common/models"
 
 	"github.com/spf13/viper"
 )
@@ -18,6 +18,6 @@ var (
 
 func Init() {
 	if viper.GetString("db.type") == string(models.DBTypePostgres) {
-		ListSQL = openiam.ListSQL
+		ListSQL = openops.ListSQL
 	}
 }

@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"openiam/common/router/v1/routers"
+	"openops/common/router/v1/routers"
 
 	"github.com/gin-gonic/gin"
 )

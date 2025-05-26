@@ -2,7 +2,7 @@ package wecom
 
 import (
 	"fmt"
-	"openiam/pkg/notify/commom"
+	"openops/pkg/notify/commom"
 	"time"
 
 	"github.com/lanyulei/toolkit/logger"

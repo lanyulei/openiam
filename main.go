@@ -1,6 +1,6 @@
 package main
 
-import "openiam/cmd"
+import "openops/cmd"
 
 func main() {
 	cmd.Execute()

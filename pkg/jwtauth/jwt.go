@@ -3,7 +3,7 @@ package jwtauth
 import (
 	"errors"
 	"fmt"
-	"openiam/app/system/models"
+	"openops/app/system/models"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"

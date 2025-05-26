@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"openiam/app/system/models"
-	"openiam/pkg/jwtauth"
-	"openiam/pkg/respstatus"
+	"openops/app/system/models"
+	"openops/pkg/jwtauth"
+	"openops/pkg/respstatus"
 	"strings"
 
 	"github.com/gin-gonic/gin"

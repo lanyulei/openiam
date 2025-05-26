@@ -1,7 +1,7 @@
 package router
 
 import (
-	"openiam/app/system/v1/api"
+	"openops/app/system/v1/api"
 
 	"github.com/gin-gonic/gin"
 )

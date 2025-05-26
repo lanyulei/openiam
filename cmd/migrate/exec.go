@@ -1,13 +1,14 @@
 package migrate
 
 import (
+	"openops/common/models"
+	"os"
+	"strings"
+
 	"github.com/lanyulei/toolkit/db"
 	"github.com/lanyulei/toolkit/logger"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
-	"openiam/common/models"
-	"os"
-	"strings"
 )
 
 func InitDB(db *gorm.DB, filePath string) (err error) {
