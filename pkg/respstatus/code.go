@@ -32,4 +32,11 @@ var (
 	GetMenuListError       = response.Response{Code: 40106, Message: "获取菜单列表失败"}
 	PathAlreadyExistsError = response.Response{Code: 40107, Message: "路径已存在"}
 	GetMenuTreeError       = response.Response{Code: 40108, Message: "获取菜单树失败"}
+
+	GetModelGroupError       = response.Response{Code: 40201, Message: "获取模型组失败"}
+	ModelGroupNameExistError = response.Response{Code: 40202, Message: "模型组名称已存在"}
+	CreateModelGroupError    = response.Response{Code: 40203, Message: "创建模型组失败"}
+	UpdateModelGroupError    = response.Response{Code: 40204, Message: "更新模型组失败"}
+	DeleteModelGroupError    = response.Response{Code: 40205, Message: "删除模型组失败"}
+	ModelGroupHasModelError  = response.Response{Code: 40206, Message: "模型组下有模型，无法删除"}
 )

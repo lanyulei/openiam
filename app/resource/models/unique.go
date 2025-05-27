@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Unique struct {
+type ModelUnique struct {
 	Title   string     `json:"title" gorm:"column:title;type:varchar(128);not null;comment:标题"`
 	Type    UniqueType `json:"type" gorm:"column:type;type:varchar(128);not null;comment:类型"`
 	FieldId string     `json:"field_id" gorm:"column:field_id;type:varchar(128);not null;comment:字段ID"`
@@ -16,11 +16,11 @@ type Unique struct {
 	models.BaseModel
 }
 
-func (m *Unique) TableName() string {
+func (m *ModelUnique) TableName() string {
 	return "resource_model_unique"
 }
 
-func (m *Unique) BeforeCreate(tx *gorm.DB) (err error) {
+func (m *ModelUnique) BeforeCreate(tx *gorm.DB) (err error) {
 	m.Id = uuid.New().String()
 	return
 }

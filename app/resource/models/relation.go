@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Relation struct {
+type ModelRelation struct {
 	SourceModelId string             `json:"source_model_id" gorm:"column:source_model_id;type:varchar(128);not null;comment:来源模型ID"`
 	TargetModelId string             `json:"target_model_id" gorm:"column:target_model_id;type:varchar(128);not null;comment:目标模型ID"`
 	Type          RelationType       `json:"type" gorm:"column:type;type:varchar(128);not null;comment:关联类型"`
@@ -16,11 +16,11 @@ type Relation struct {
 	models.BaseModel
 }
 
-func (m *Relation) TableName() string {
+func (m *ModelRelation) TableName() string {
 	return "resource_model_relation"
 }
 
-func (m *Relation) BeforeCreate(tx *gorm.DB) (err error) {
+func (m *ModelRelation) BeforeCreate(tx *gorm.DB) (err error) {
 	m.Id = uuid.New().String()
 	return
 }
