@@ -1,0 +1,135 @@
+package api
+
+import (
+	"openops/app/resource/models"
+	"openops/pkg/respstatus"
+
+	"github.com/gin-gonic/gin"
+	"github.com/lanyulei/toolkit/db"
+	"github.com/lanyulei/toolkit/pagination"
+	"github.com/lanyulei/toolkit/response"
+)
+
+// FieldList 分页查询
+func FieldList(c *gin.Context) {
+	var (
+		err    error
+		list   []*models.Field
+		result interface{}
+	)
+
+	dbConn := db.Orm().Model(&models.Field{})
+
+	result, err = pagination.Paging(&pagination.Param{
+		C:  c,
+		DB: dbConn,
+	}, &list)
+	if err != nil {
+		response.Error(c, err, respstatus.FieldListError)
+		return
+	}
+
+	response.OK(c, result, "")
+}
+
+// CreateField 创建
+func CreateField(c *gin.Context) {
+	var (
+		err   error
+		field models.Field
+		count int64
+	)
+
+	if err = c.ShouldBindJSON(&field); err != nil {
+		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
+
+	// model_id、group_id、name 联合唯一
+	if err = db.Orm().
+		Where("model_id = ? AND group_id = ? AND name = ?", field.ModelId, field.GroupId, field.Name).
+		Count(&count).Error; err != nil {
+		response.Error(c, err, respstatus.GetFieldError)
+		return
+	}
+
+	if count > 0 {
+		response.Error(c, err, respstatus.FieldExistError)
+		return
+	}
+
+	if err = db.Orm().Create(&field).Error; err != nil {
+		response.Error(c, err, respstatus.CreateFieldError)
+		return
+	}
+
+	response.OK(c, field, "")
+}
+
+// UpdateField 更新
+func UpdateField(c *gin.Context) {
+	var (
+		err     error
+		field   models.Field
+		count   int64
+		fieldId = c.Param("id")
+	)
+
+	if err = c.ShouldBindJSON(&field); err != nil {
+		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
+
+	// model_id、group_id、name 联合唯一，排除自己
+	if err = db.Orm().
+		Where("model_id = ? AND group_id = ? AND name = ? AND id != ?", field.ModelId, field.GroupId, field.Name, fieldId).
+		Count(&count).Error; err != nil {
+		response.Error(c, err, respstatus.GetFieldError)
+		return
+	}
+
+	if count > 0 {
+		response.Error(c, err, respstatus.FieldExistError)
+		return
+	}
+
+	err = db.Orm().
+		Where("id = ?", fieldId).
+		Updates(map[string]interface{}{
+			"name":        field.Name,
+			"group_id":    field.GroupId,
+			"type":        field.Type,
+			"options":     field.Options,
+			"is_edit":     field.IsEdit,
+			"is_required": field.IsRequired,
+			"is_list":     field.IsList,
+			"placeholder": field.Placeholder,
+			"desc":        field.Desc,
+			"order":       field.Order,
+			"model_id":    field.ModelId,
+		}).Error
+	if err != nil {
+		response.Error(c, err, respstatus.UpdateFieldError)
+		return
+	}
+
+	response.OK(c, field, "")
+}
+
+// DeleteField 删除
+func DeleteField(c *gin.Context) {
+	var (
+		err     error
+		fieldId = c.Param("id")
+	)
+
+	err = db.Orm().
+		Where("id = ?", fieldId).
+		Delete(&models.Field{}).Error
+	if err != nil {
+		response.Error(c, err, respstatus.DeleteFieldError)
+		return
+	}
+
+	response.OK(c, nil, "")
+}
