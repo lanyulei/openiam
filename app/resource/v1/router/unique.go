@@ -9,7 +9,7 @@ import (
 func ModelUniqueRouter(g *gin.RouterGroup) {
 	router := g.Group("/model-unique")
 	{
-		router.GET("/:id", api.ModelUniqueList)
+		router.GET("/:id", api.ModelUniqueByIdList)
 		router.POST("", api.CreateModelUnique)
 		router.PUT("/:id", api.UpdateModelUnique)
 		router.DELETE("/:id", api.DeleteModelUnique)

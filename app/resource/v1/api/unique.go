@@ -9,8 +9,8 @@ import (
 	"github.com/lanyulei/toolkit/response"
 )
 
-// ModelUniqueList 通过源模型ID获取唯一约束列表
-func ModelUniqueList(c *gin.Context) {
+// ModelUniqueByIdList 通过源模型ID获取唯一约束列表
+func ModelUniqueByIdList(c *gin.Context) {
 	var (
 		err     error
 		list    []*models.ModelUnique

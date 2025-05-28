@@ -9,7 +9,7 @@ import (
 	"github.com/lanyulei/toolkit/response"
 )
 
-// ModelRelationBySourceModelIdList 获取模型关系列表
+// ModelRelationByIdList 获取模型关系列表
 func ModelRelationByIdList(c *gin.Context) {
 	var (
 		err       error
