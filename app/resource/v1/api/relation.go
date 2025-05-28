@@ -10,11 +10,11 @@ import (
 )
 
 // ModelRelationBySourceModelIdList 获取模型关系列表
-func ModelRelationBySourceModelIdList(c *gin.Context) {
+func ModelRelationByIdList(c *gin.Context) {
 	var (
 		err       error
 		relations []models.ModelRelation
-		sourceId  = c.Param("sourceModelId")
+		sourceId  = c.Param("id")
 	)
 
 	if err = db.Orm().Where("source_model_id =?", sourceId).Find(&relations).Error; err != nil {

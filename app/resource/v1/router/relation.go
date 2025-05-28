@@ -9,7 +9,7 @@ import (
 func ModelRelationRouter(g *gin.RouterGroup) {
 	router := g.Group("/model-relation")
 	{
-		router.GET("/:sourceModelId", api.ModelRelationBySourceModelIdList)
+		router.GET("/:id", api.ModelRelationByIdList)
 		router.POST("", api.CreateModelRelation)
 		router.PUT("/:id", api.UpdateModelRelation)
 		router.DELETE("/:id", api.DeleteModelRelation)

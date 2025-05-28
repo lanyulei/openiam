@@ -72,4 +72,9 @@ var (
 	ModelRelationExistError           = response.Response{Code: 40237, Message: "模型关联已存在"}
 	UpdateModelRelationError          = response.Response{Code: 40238, Message: "更新模型关联失败"}
 	DeleteModelRelationError          = response.Response{Code: 40239, Message: "删除模型关联失败"}
+	GetModelUniqueError               = response.Response{Code: 40240, Message: "获取模型唯一约束失败"}
+	CreateModelUniqueError            = response.Response{Code: 40241, Message: "创建模型唯一约束失败"}
+	ModelUniqueExistError             = response.Response{Code: 40242, Message: "模型唯一约束已存在"}
+	UpdateModelUniqueError            = response.Response{Code: 40243, Message: "更新模型唯一约束失败"}
+	DeleteModelUniqueError            = response.Response{Code: 40244, Message: "删除模型唯一约束失败"}
 )
