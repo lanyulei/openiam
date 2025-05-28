@@ -53,4 +53,10 @@ var (
 	GetModelDataError        = response.Response{Code: 40218, Message: "获取模型数据失败"}
 	ModelHasDataError        = response.Response{Code: 40219, Message: "模型下有数据，无法删除"}
 	FieldGroupListError      = response.Response{Code: 40220, Message: "获取模型字段组列表失败"}
+	GetFieldGroupError       = response.Response{Code: 40221, Message: "获取模型字段组失败"}
+	FieldGroupNameExistError = response.Response{Code: 40222, Message: "模型字段组名称已存在"}
+	CreateFieldGroupError    = response.Response{Code: 40223, Message: "创建模型字段组失败"}
+	UpdateFieldGroupError    = response.Response{Code: 40224, Message: "更新模型字段组失败"}
+	DeleteFieldGroupError    = response.Response{Code: 40225, Message: "删除模型字段组失败"}
+	FieldGroupHasBindError   = response.Response{Code: 40226, Message: "模型字段组下有绑定，无法删除"}
 )
