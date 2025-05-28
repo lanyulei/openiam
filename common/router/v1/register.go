@@ -12,6 +12,7 @@ import (
 */
 
 func RegisterRouter(g *gin.RouterGroup) {
-	routers.RegisterPublicRouter(g) // 公共接口路由，非业务相关路由
-	routers.RegisterSystemRouter(g) // 系统管理路由
+	routers.RegisterPublicRouter(g)   // 公共接口路由，非业务相关路由
+	routers.RegisterSystemRouter(g)   // 系统管理路由
+	routers.RegisterResourceRouter(g) // 资源管理路由
 }

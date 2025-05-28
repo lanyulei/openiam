@@ -1,6 +1,17 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"openops/app/resource/v1/api"
+
+	"github.com/gin-gonic/gin"
+)
 
 func FieldRouter(g *gin.RouterGroup) {
+	router := g.Group("/field")
+	{
+		router.GET("", api.FieldList)
+		router.POST("", api.CreateField)
+		router.PUT("/:id", api.UpdateField)
+		router.DELETE("/:id", api.DeleteField)
+	}
 }
