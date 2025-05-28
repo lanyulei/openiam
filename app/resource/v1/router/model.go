@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ModelGroupRouter(g *gin.RouterGroup) {
-	router := g.Group("/model-group")
+func ModelRouter(g *gin.RouterGroup) {
+	router := g.Group("/model")
 	{
 		router.GET("", api.ModelGroupList)
 		router.POST("", api.CreateModelGroup)

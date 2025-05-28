@@ -39,4 +39,18 @@ var (
 	UpdateModelGroupError    = response.Response{Code: 40204, Message: "更新模型组失败"}
 	DeleteModelGroupError    = response.Response{Code: 40205, Message: "删除模型组失败"}
 	ModelGroupHasModelError  = response.Response{Code: 40206, Message: "模型组下有模型，无法删除"}
+	ModelGroupListError      = response.Response{Code: 40207, Message: "获取模型组列表失败"}
+	ModelListError           = response.Response{Code: 40208, Message: "获取模型列表失败"}
+	GetModelError            = response.Response{Code: 40209, Message: "获取模型失败"}
+	ModelNameExistError      = response.Response{Code: 40210, Message: "模型名称已存在"}
+	CreateModelError         = response.Response{Code: 40211, Message: "创建模型失败"}
+	UpdateModelError         = response.Response{Code: 40212, Message: "更新模型失败"}
+	DeleteModelError         = response.Response{Code: 40213, Message: "删除模型失败"}
+	GetModelFieldError       = response.Response{Code: 40214, Message: "获取模型字段失败"}
+	ModelHasFieldError       = response.Response{Code: 40215, Message: "模型下有字段，无法删除"}
+	GetModelFieldGroupError  = response.Response{Code: 40216, Message: "获取模型字段组失败"}
+	ModelHasFieldGroupError  = response.Response{Code: 40217, Message: "模型下有字段组，无法删除"}
+	GetModelDataError        = response.Response{Code: 40218, Message: "获取模型数据失败"}
+	ModelHasDataError        = response.Response{Code: 40219, Message: "模型下有数据，无法删除"}
+	FieldGroupListError      = response.Response{Code: 40220, Message: "获取模型字段组列表失败"}
 )
