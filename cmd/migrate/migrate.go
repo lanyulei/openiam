@@ -26,6 +26,7 @@ func autoMigrate(data bool) {
 	logger.Info("start synchronizing data structures...")
 
 	migrateModels = append(migrateModels, migrate.SystemModels...)
+	migrateModels = append(migrateModels, migrate.ResourceModels...)
 
 	err := db.Orm().AutoMigrate(
 		migrateModels...,
