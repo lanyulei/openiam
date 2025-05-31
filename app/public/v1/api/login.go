@@ -13,13 +13,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type LoginType string
+
+const (
+	LoginTypeAccount LoginType = "account"
+)
+
 // Login 登陆
 func Login(c *gin.Context) {
 	var (
 		err    error
 		params struct {
-			Username string `json:"username" binding:"required"`
-			Password string `json:"password" binding:"required"`
+			Username string    `json:"username" binding:"required"`
+			Password string    `json:"password" binding:"required"`
+			Type     LoginType `json:"type" binding:"required"`
 		}
 		userInfo models.User
 		token    *jwtauth.TokenPair
@@ -31,22 +38,27 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// 查询用户信息
-	err = db.Orm().Model(&models.User{}).Where("username = ?", params.Username).First(&userInfo).Error
-	if err != nil {
-		response.Error(c, err, respstatus.GetUserError)
-		return
-	}
+	if params.Type == LoginTypeAccount {
+		// 查询用户信息
+		err = db.Orm().Model(&models.User{}).Where("username = ?", params.Username).First(&userInfo).Error
+		if err != nil {
+			response.Error(c, err, respstatus.GetUserError)
+			return
+		}
 
-	err = bcrypt.CompareHashAndPassword([]byte(userInfo.Password), []byte(params.Password))
-	if err != nil {
-		response.Error(c, fmt.Errorf("password error: %v", err), respstatus.CompareHashAndPasswordError)
-		return
-	}
+		err = bcrypt.CompareHashAndPassword([]byte(userInfo.Password), []byte(params.Password))
+		if err != nil {
+			response.Error(c, fmt.Errorf("password error: %v", err), respstatus.CompareHashAndPasswordError)
+			return
+		}
 
-	token, err = jwtauth.GenerateTokens(userInfo.Id, userInfo.Username)
-	if err != nil {
-		response.Error(c, err, respstatus.GenerateTokenError)
+		token, err = jwtauth.GenerateTokens(userInfo.Id, userInfo.Username)
+		if err != nil {
+			response.Error(c, err, respstatus.GenerateTokenError)
+			return
+		}
+	} else {
+		response.Error(c, fmt.Errorf("invalid login type"), respstatus.InvalidLoginTypeError)
 		return
 	}
 

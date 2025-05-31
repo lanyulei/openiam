@@ -23,6 +23,7 @@ var (
 	PasswordEmptyError          = response.Response{Code: 40010, Message: "密码不能为空"}
 	UserDetailError             = response.Response{Code: 40011, Message: "获取用户详情失败"}
 	UserNotFoundError           = response.Response{Code: 40012, Message: "用户不存在"}
+	InvalidLoginTypeError       = response.Response{Code: 40013, Message: "无效的登录类型"}
 
 	GetMenuError           = response.Response{Code: 40101, Message: "获取菜单失败"}
 	CreateMenuError        = response.Response{Code: 40102, Message: "创建菜单失败"}
