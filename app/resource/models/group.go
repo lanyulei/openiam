@@ -8,9 +8,9 @@ import (
 )
 
 type ModelGroup struct {
-	Name  string `json:"name" gorm:"column:name;type:varchar(128);not null;comment:名称"`
+	Name  string `json:"name" gorm:"column:name;type:varchar(128);not null;comment:名称" binding:"required"`
 	Desc  string `json:"desc" gorm:"column:desc;type:varchar(512);not null;comment:描述"`
-	Order int    `json:"order" gorm:"column:order;type:int;not null;default:0;comment:排序"`
+	Order int    `json:"order" gorm:"column:order;type:int;not null;default:1;comment:排序"`
 	models.BaseModel
 }
 

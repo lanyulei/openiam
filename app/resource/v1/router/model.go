@@ -9,9 +9,10 @@ import (
 func ModelRouter(g *gin.RouterGroup) {
 	router := g.Group("/model")
 	{
-		router.GET("", api.ModelGroupList)
-		router.POST("", api.CreateModelGroup)
-		router.PUT("/:id", api.UpdateModelGroup)
-		router.DELETE("/:id", api.DeleteModelGroup)
+		router.GET("/list", api.GetModels)
+		router.GET("", api.ModelList)
+		router.POST("", api.CreateModel)
+		router.PUT("/:id", api.UpdateModel)
+		router.DELETE("/:id", api.DeleteModel)
 	}
 }

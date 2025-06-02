@@ -10,6 +10,45 @@ import (
 	"github.com/lanyulei/toolkit/response"
 )
 
+// GetModels 获取模型列表
+func GetModels(c *gin.Context) {
+	var (
+		err  error
+		list []*struct {
+			models.ModelGroup
+			Models []*models.Model `json:"models" gorm:"-"`
+		}
+		modelList []*models.Model
+		modelMap  = make(map[string][]*models.Model)
+	)
+
+	err = db.Orm().Model(&models.ModelGroup{}).
+		Order(`"order" asc`).
+		Find(&list).Error
+	if err != nil {
+		response.Error(c, err, respstatus.GetModelGroupError)
+		return
+	}
+
+	err = db.Orm().Model(&models.Model{}).
+		Order(`"order" asc`).
+		Find(&modelList).Error
+	if err != nil {
+		response.Error(c, err, respstatus.GetModelError)
+		return
+	}
+
+	for _, model := range modelList {
+		modelMap[model.GroupId] = append(modelMap[model.GroupId], model)
+	}
+
+	for _, group := range list {
+		group.Models = modelMap[group.Id]
+	}
+
+	response.OK(c, list, "")
+}
+
 // ModelList 分页展示模型列表
 func ModelList(c *gin.Context) {
 	var (
