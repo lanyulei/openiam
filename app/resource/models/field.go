@@ -42,6 +42,7 @@ const (
 	FieldTypeEnumMulti   FieldType = "enumMulti"
 	FieldTypeDate        FieldType = "date"
 	FieldTypeTime        FieldType = "time"
+	FieldTypeDateTime    FieldType = "dateTime"
 	FieldTypeLongString  FieldType = "longString"
 	FieldTypeUser        FieldType = "user"
 	FieldTypeTimeZone    FieldType = "timeZone"
@@ -65,6 +66,7 @@ var baseFieldTypeMap = []LabelValue{
 	{"枚举多选", FieldTypeEnumMulti},
 	{"日期", FieldTypeDate},
 	{"时间", FieldTypeTime},
+	{"日期时间", FieldTypeDateTime},
 	{"长字符串", FieldTypeLongString},
 	{"用户", FieldTypeUser},
 	{"时区", FieldTypeTimeZone},
@@ -133,9 +135,15 @@ type EnumMultiOptions struct {
 	Default []string `json:"default"`
 }
 
-// DefaultOptions 日期、时间、用户、时区的配置，默认值
+// DefaultOptions 用户、时区的配置，默认值
 type DefaultOptions struct {
 	Default string `json:"default"`
+}
+
+// DateOptions 日期、时间、日期时间的配置，默认值
+type DateTimeOptions struct {
+	Default string `json:"default"`
+	Format  string `json:"format"`
 }
 
 // BooleanOptions 布尔值配置，默认值
