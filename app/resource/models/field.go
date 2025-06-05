@@ -135,15 +135,9 @@ type EnumMultiOptions struct {
 	Default []string `json:"default"`
 }
 
-// DefaultOptions 用户、时区的配置，默认值
+// DefaultOptions 用户、日期、时间、日期时间、时区的配置，默认值
 type DefaultOptions struct {
 	Default string `json:"default"`
-}
-
-// DateOptions 日期、时间、日期时间的配置，默认值
-type DateTimeOptions struct {
-	Default string `json:"default"`
-	Format  string `json:"format"`
 }
 
 // BooleanOptions 布尔值配置，默认值
