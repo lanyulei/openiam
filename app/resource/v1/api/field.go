@@ -133,3 +133,49 @@ func DeleteField(c *gin.Context) {
 
 	response.OK(c, nil, "")
 }
+
+// GetFieldsAndGroups 获取 field 和 field 的分组
+func GetFieldsAndGroups(c *gin.Context) {
+	var (
+		err  error
+		list []*struct {
+			models.FieldGroup
+			Fields []*models.Field `json:"fields" gorm:"-"`
+		}
+		fieldList []*models.Field
+		fieldMap  = make(map[string][]*models.Field)
+		modelId   = c.Param("id")
+	)
+
+	// 获取 field 分组列表
+	err = db.Orm().Model(&models.FieldGroup{}).
+		Where("model_id = ?", modelId).
+		Order(`"order" asc`).
+		Find(&list).Error
+	if err != nil {
+		response.Error(c, err, respstatus.GetFieldGroupError)
+		return
+	}
+
+	// 获取 field 列表
+	err = db.Orm().Model(&models.Field{}).
+		Where("model_id = ?", modelId).
+		Order(`"order" asc`).
+		Find(&fieldList).Error
+	if err != nil {
+		response.Error(c, err, respstatus.GetFieldError)
+		return
+	}
+
+	// 将 field 按分组 ID 分组
+	for _, field := range fieldList {
+		fieldMap[field.GroupId] = append(fieldMap[field.GroupId], field)
+	}
+
+	// 将分组后的 field 关联到对应的分组上
+	for _, group := range list {
+		group.Fields = fieldMap[group.Id]
+	}
+
+	response.OK(c, list, "")
+}
