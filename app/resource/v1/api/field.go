@@ -145,7 +145,15 @@ func GetFieldsAndGroups(c *gin.Context) {
 		fieldList []*models.Field
 		fieldMap  = make(map[string][]*models.Field)
 		modelId   = c.Param("id")
+		query     struct {
+			Name string `json:"name" form:"name"`
+		}
 	)
+
+	if err = c.ShouldBindQuery(&query); err != nil {
+		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
 
 	// 获取 field 分组列表
 	err = db.Orm().Model(&models.FieldGroup{}).
@@ -157,10 +165,16 @@ func GetFieldsAndGroups(c *gin.Context) {
 		return
 	}
 
-	// 获取 field 列表
-	err = db.Orm().Model(&models.Field{}).
+	dbConn := db.Orm().Model(&models.Field{}).
 		Where("model_id = ?", modelId).
-		Order(`"order" asc`).
+		Order(`"order" asc`)
+
+	if query.Name != "" {
+		dbConn = dbConn.Where("name LIKE ?", "%"+query.Name+"%")
+	}
+
+	// 获取 field 列表
+	err = dbConn.
 		Find(&fieldList).Error
 	if err != nil {
 		response.Error(c, err, respstatus.GetFieldError)
