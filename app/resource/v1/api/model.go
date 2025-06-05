@@ -20,7 +20,15 @@ func GetModels(c *gin.Context) {
 		}
 		modelList []*models.Model
 		modelMap  = make(map[string][]*models.Model)
+		query     struct {
+			Name string `json:"name" form:"name"`
+		}
 	)
+
+	if err = c.ShouldBindQuery(&query); err != nil {
+		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
 
 	err = db.Orm().Model(&models.ModelGroup{}).
 		Order(`"order" asc`).
@@ -30,8 +38,14 @@ func GetModels(c *gin.Context) {
 		return
 	}
 
-	err = db.Orm().Model(&models.Model{}).
-		Order(`"order" asc`).
+	dbConn := db.Orm().Model(&models.Model{}).
+		Order(`"order" asc`)
+
+	if query.Name != "" {
+		dbConn = dbConn.Where("name LIKE ?", "%"+query.Name+"%")
+	}
+
+	err = dbConn.
 		Find(&modelList).Error
 	if err != nil {
 		response.Error(c, err, respstatus.GetModelError)
