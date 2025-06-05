@@ -14,8 +14,8 @@ type Field struct {
 	Type        FieldType       `json:"type" gorm:"column:type;type:varchar(128);not null;comment:类型"`
 	Options     json.RawMessage `json:"options" gorm:"column:options;type:jsonb;not null;comment:选项"`
 	IsEdit      bool            `json:"is_edit" gorm:"column:is_edit;type:boolean;not null;default:true;comment:是否可编辑"`
-	IsRequired  bool            `json:"is_required" gorm:"column:is_required;type:boolean;default:true;not null;comment:是否必填"`
-	IsList      bool            `json:"is_list" gorm:"column:is_list;type:boolean;not null;default:true;comment:是否列表展示"` // FieldTypeTable 时，无法在列表展示
+	IsRequired  bool            `json:"is_required" gorm:"column:is_required;type:boolean;default:false;not null;comment:是否必填"`
+	IsList      bool            `json:"is_list" gorm:"column:is_list;type:boolean;not null;default:false;comment:是否列表展示"` // FieldTypeTable 时，无法在列表展示
 	Placeholder string          `json:"placeholder" gorm:"column:placeholder;type:varchar(256);not null;comment:占位符"`
 	Desc        string          `json:"desc" gorm:"column:desc;type:varchar(512);not null;comment:描述"`
 	Order       int             `json:"order" gorm:"column:order;type:int;not null;default:0;comment:排序"`

@@ -46,7 +46,7 @@ func CreateField(c *gin.Context) {
 	}
 
 	// model_id、group_id、name 联合唯一
-	if err = db.Orm().
+	if err = db.Orm().Model(&models.Field{}).
 		Where("model_id = ? AND group_id = ? AND name = ?", field.ModelId, field.GroupId, field.Name).
 		Count(&count).Error; err != nil {
 		response.Error(c, err, respstatus.GetFieldError)
@@ -81,7 +81,7 @@ func UpdateField(c *gin.Context) {
 	}
 
 	// model_id、group_id、name 联合唯一，排除自己
-	if err = db.Orm().
+	if err = db.Orm().Model(&models.Field{}).
 		Where("model_id = ? AND group_id = ? AND name = ? AND id != ?", field.ModelId, field.GroupId, field.Name, fieldId).
 		Count(&count).Error; err != nil {
 		response.Error(c, err, respstatus.GetFieldError)
