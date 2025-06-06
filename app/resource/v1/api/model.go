@@ -8,6 +8,7 @@ import (
 	"github.com/lanyulei/toolkit/db"
 	"github.com/lanyulei/toolkit/pagination"
 	"github.com/lanyulei/toolkit/response"
+	"gorm.io/gorm"
 )
 
 // GetModels 获取模型列表
@@ -164,36 +165,10 @@ func UpdateModel(c *gin.Context) {
 // DeleteModel 删除模型
 func DeleteModel(c *gin.Context) {
 	var (
-		err                               error
-		modelId                           = c.Param("id")
-		count, fieldGroupCount, dataCount int64
+		err       error
+		modelId   = c.Param("id")
+		dataCount int64
 	)
-
-	// 检查模型是否绑定了字段分组
-	err = db.Orm().Model(&models.FieldGroup{}).Where("model_id = ?", modelId).Count(&fieldGroupCount).Error
-	if err != nil {
-		response.Error(c, err, respstatus.GetModelFieldGroupError)
-		return
-	}
-
-	if fieldGroupCount > 0 {
-		// 如果模型绑定了字段分组，不允许删除
-		response.Error(c, err, respstatus.ModelHasFieldGroupError)
-		return
-	}
-
-	// 检查模型是否绑定了字段
-	err = db.Orm().Model(&models.Field{}).Where("model_id =?", modelId).Count(&count).Error
-	if err != nil {
-		response.Error(c, err, respstatus.GetModelFieldError)
-		return
-	}
-
-	if count > 0 {
-		// 如果模型绑定了字段，不允许删除
-		response.Error(c, err, respstatus.ModelHasFieldError)
-		return
-	}
 
 	// 检查模型是否绑定了数据
 	err = db.Orm().Model(&models.Data{}).Where("model_id = ?", modelId).Count(&dataCount).Error
@@ -208,11 +183,60 @@ func DeleteModel(c *gin.Context) {
 		return
 	}
 
-	err = db.Orm().Where("id = ?", modelId).Delete(&models.Model{}).Error
+	// gorm 的事务 Transaction
+	err = db.Orm().Transaction(func(tx *gorm.DB) error {
+		// 删除模型对应的字段分组
+		err = tx.Where("model_id = ?", modelId).Delete(&models.FieldGroup{}).Error
+		if err != nil {
+			return err
+		}
+
+		// 删除模型对应的字段
+		err = tx.Where("model_id =?", modelId).Delete(&models.Field{}).Error
+		if err != nil {
+			return err
+		}
+
+		err = tx.Where("id = ?", modelId).Delete(&models.Model{}).Error
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 	if err != nil {
 		response.Error(c, err, respstatus.DeleteModelError)
 		return
 	}
 
 	response.OK(c, nil, "")
+}
+
+// GetModel 获取模型详情
+func GetModel(c *gin.Context) {
+	var (
+		err   error
+		model struct {
+			models.Model
+			GroupName string `json:"group_name" gorm:"-"`
+		}
+		modelGroup models.ModelGroup
+		modelId    = c.Param("id")
+	)
+
+	err = db.Orm().Where("id = ?", modelId).First(&model).Error
+	if err != nil {
+		response.Error(c, err, respstatus.GetModelError)
+		return
+	}
+
+	err = db.Orm().Where("id =?", model.GroupId).First(&modelGroup).Error
+	if err != nil {
+		response.Error(c, err, respstatus.GetModelGroupError)
+		return
+	}
+
+	model.GroupName = modelGroup.Name
+
+	response.OK(c, model, "")
 }
