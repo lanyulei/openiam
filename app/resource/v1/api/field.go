@@ -93,7 +93,7 @@ func UpdateField(c *gin.Context) {
 		return
 	}
 
-	err = db.Orm().
+	err = db.Orm().Model(&models.Field{}).
 		Where("id = ?", fieldId).
 		Updates(map[string]interface{}{
 			"name":        field.Name,
