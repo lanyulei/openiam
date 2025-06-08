@@ -9,6 +9,7 @@ import (
 )
 
 type Field struct {
+	Key         string          `json:"key" gorm:"column:key;type:varchar(128);not null;comment:字段标识"`
 	Name        string          `json:"name" gorm:"column:name;type:varchar(128);not null;comment:名称"`
 	GroupId     string          `json:"group_id" gorm:"column:group_id;type:varchar(128);not null;comment:分组ID"`
 	Type        FieldType       `json:"type" gorm:"column:type;type:varchar(128);not null;comment:类型"`

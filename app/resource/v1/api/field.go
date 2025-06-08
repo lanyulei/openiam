@@ -35,9 +35,10 @@ func FieldList(c *gin.Context) {
 // CreateField 创建
 func CreateField(c *gin.Context) {
 	var (
-		err   error
-		field models.Field
-		count int64
+		err      error
+		field    models.Field
+		count    int64
+		keyCount int64
 	)
 
 	if err = c.ShouldBindJSON(&field); err != nil {
@@ -45,9 +46,9 @@ func CreateField(c *gin.Context) {
 		return
 	}
 
-	// model_id、group_id、name 联合唯一
+	// model_id、name 联合唯一
 	if err = db.Orm().Model(&models.Field{}).
-		Where("model_id = ? AND group_id = ? AND name = ?", field.ModelId, field.GroupId, field.Name).
+		Where("model_id = ? AND name = ?", field.ModelId, field.Name).
 		Count(&count).Error; err != nil {
 		response.Error(c, err, respstatus.GetFieldError)
 		return
@@ -55,6 +56,18 @@ func CreateField(c *gin.Context) {
 
 	if count > 0 {
 		response.Error(c, err, respstatus.FieldExistError)
+		return
+	}
+
+	// model_id、key 联合唯一
+	if err = db.Orm().Model(&models.Field{}).
+		Where("model_id = ? AND key = ?", field.ModelId, field.Key).
+		Count(&keyCount).Error; err != nil {
+		response.Error(c, err, respstatus.GetFieldError)
+		return
+	}
+	if keyCount > 0 {
+		response.Error(c, err, respstatus.FieldKeyExistError)
 		return
 	}
 
@@ -69,10 +82,11 @@ func CreateField(c *gin.Context) {
 // UpdateField 更新
 func UpdateField(c *gin.Context) {
 	var (
-		err     error
-		field   models.Field
-		count   int64
-		fieldId = c.Param("id")
+		err      error
+		field    models.Field
+		count    int64
+		keyCount int64
+		fieldId  = c.Param("id")
 	)
 
 	if err = c.ShouldBindJSON(&field); err != nil {
@@ -80,9 +94,9 @@ func UpdateField(c *gin.Context) {
 		return
 	}
 
-	// model_id、group_id、name 联合唯一，排除自己
+	// model_id、name 联合唯一，排除自己
 	if err = db.Orm().Model(&models.Field{}).
-		Where("model_id = ? AND group_id = ? AND name = ? AND id != ?", field.ModelId, field.GroupId, field.Name, fieldId).
+		Where("model_id = ? AND name = ? AND id != ?", field.ModelId, field.Name, fieldId).
 		Count(&count).Error; err != nil {
 		response.Error(c, err, respstatus.GetFieldError)
 		return
@@ -93,9 +107,22 @@ func UpdateField(c *gin.Context) {
 		return
 	}
 
+	// model_id、key 联合唯一，排除自己
+	if err = db.Orm().Model(&models.Field{}).
+		Where("model_id =? AND key =? AND id!=?", field.ModelId, field.Key, fieldId).
+		Count(&keyCount).Error; err != nil {
+		response.Error(c, err, respstatus.GetFieldError)
+		return
+	}
+	if keyCount > 0 {
+		response.Error(c, err, respstatus.FieldKeyExistError)
+		return
+	}
+
 	err = db.Orm().Model(&models.Field{}).
 		Where("id = ?", fieldId).
 		Updates(map[string]interface{}{
+			"key":         field.Key,
 			"name":        field.Name,
 			"group_id":    field.GroupId,
 			"type":        field.Type,
