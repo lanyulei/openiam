@@ -45,8 +45,8 @@ func CreateFieldGroup(c *gin.Context) {
 		return
 	}
 
-	// name 必须唯一
-	if err = db.Orm().Model(&models.FieldGroup{}).Where("name = ?", req.Name).Count(&count).Error; err != nil {
+	// name 和 model_id 联合唯一
+	if err = db.Orm().Model(&models.FieldGroup{}).Where("model_id = ? AND name = ?", req.ModelId, req.Name).Count(&count).Error; err != nil {
 		response.Error(c, err, respstatus.GetFieldGroupError)
 		return
 	}
@@ -78,8 +78,8 @@ func UpdateFieldGroup(c *gin.Context) {
 		return
 	}
 
-	// name 必须唯一，排除自己
-	if err = db.Orm().Model(&models.FieldGroup{}).Where("name = ? and id != ?", req.Name, fieldGroupId).Count(&count).Error; err != nil {
+	// name 和 model_id 必须唯一，排除自己
+	if err = db.Orm().Model(&models.FieldGroup{}).Where("model_id = ? AND name = ? AND id != ?", req.ModelId, req.Name, fieldGroupId).Count(&count).Error; err != nil {
 		response.Error(c, err, respstatus.GetFieldGroupError)
 		return
 	}
