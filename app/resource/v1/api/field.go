@@ -133,6 +133,7 @@ func UpdateField(c *gin.Context) {
 			"placeholder": field.Placeholder,
 			"desc":        field.Desc,
 			"order":       field.Order,
+			"span":        field.Span,
 			"model_id":    field.ModelId,
 		}).Error
 	if err != nil {
