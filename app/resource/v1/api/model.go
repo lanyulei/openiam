@@ -24,6 +24,12 @@ func GetModels(c *gin.Context) {
 		query     struct {
 			Name string `json:"name" form:"name"`
 		}
+		modelIdList    []string
+		modelDataCount []struct {
+			ModelId string
+			Count   int
+		}
+		modelDataCountMap = make(map[string]int)
 	)
 
 	if err = c.ShouldBindQuery(&query); err != nil {
@@ -54,11 +60,35 @@ func GetModels(c *gin.Context) {
 	}
 
 	for _, model := range modelList {
+		modelIdList = append(modelIdList, model.Id)
 		modelMap[model.GroupId] = append(modelMap[model.GroupId], model)
 	}
 
 	for _, group := range list {
 		group.Models = modelMap[group.Id]
+	}
+
+	// 获取所有模型的示例数据数量统计
+	err = db.Orm().Model(&models.Data{}).
+		Select("model_id, count(id) as count").
+		Where("model_id in ?", modelIdList).
+		Group("model_id").
+		Find(&modelDataCount).Error
+	if err != nil {
+		response.Error(c, err, respstatus.GetModelError)
+		return
+	}
+
+	// 模型数据数量统计
+	for _, item := range modelDataCount {
+		modelDataCountMap[item.ModelId] = item.Count
+	}
+
+	// 模型数据数量赋值
+	for _, group := range list {
+		for _, model := range group.Models {
+			model.DataCount = modelDataCountMap[model.Id]
+		}
 	}
 
 	response.OK(c, list, "")

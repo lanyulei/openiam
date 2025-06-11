@@ -155,14 +155,14 @@ type ListOptions struct {
 
 // TableOptions 表格配置，默认值
 type TableOptions struct {
-	Options []struct {
-		Label      string `json:"label"`
-		Name       string `json:"name"`
-		Type       string `json:"type"` // 支持 ShortString、Number、Float、Enum、EnumMulti、Boolean
-		IsEdit     bool   `json:"is_edit"`
-		IsRequired bool   `json:"is_required"`
-		Regexp     string `json:"regexp"`
-		Default    string `json:"default"`
-	}
+	Columns []struct {
+		Label string `json:"label"`
+		Value string `json:"value"`
+		// Type       string `json:"type"` // 支持 ShortString、Number、Float、Enum、EnumMulti、Boolean
+		// IsEdit     bool   `json:"is_edit"`
+		// IsRequired bool   `json:"is_required"`
+		// Regexp     string `json:"regexp"`
+		// Default    string `json:"default"`
+	} `json:"columns"`
 	Default []map[string]interface{} `json:"default"`
 }
