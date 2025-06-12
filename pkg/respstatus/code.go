@@ -80,4 +80,6 @@ var (
 	DeleteModelUniqueError            = response.Response{Code: 40244, Message: "删除模型唯一约束失败"}
 	DataListError                     = response.Response{Code: 40245, Message: "获取模型数据列表失败"}
 	FieldKeyExistError                = response.Response{Code: 40246, Message: "模型字段键已存在"}
+	VerifyDataError                   = response.Response{Code: 40247, Message: "验证数据失败"}
+	CreateDataError                   = response.Response{Code: 40248, Message: "创建模型数据失败"}
 )

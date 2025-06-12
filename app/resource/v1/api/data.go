@@ -3,6 +3,7 @@ package api
 import (
 	"openops/app/resource/models"
 	"openops/pkg/respstatus"
+	"openops/pkg/server"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"
@@ -41,6 +42,18 @@ func CreateData(c *gin.Context) {
 
 	if err = c.ShouldBindJSON(&data); err != nil {
 		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
+
+	err = server.VerifyData(&data)
+	if err != nil {
+		response.Error(c, err, respstatus.VerifyDataError)
+		return
+	}
+
+	err = db.Orm().Create(&data).Error
+	if err != nil {
+		response.Error(c, err, respstatus.CreateDataError)
 		return
 	}
 

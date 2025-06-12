@@ -53,7 +53,7 @@ const (
 	FieldTypeTable       FieldType = "table"
 )
 
-// 定义一个结构体来表示标签和值的映射
+// LabelValue 定义一个结构体来表示标签和值的映射
 type LabelValue struct {
 	Label string
 	Value FieldType
