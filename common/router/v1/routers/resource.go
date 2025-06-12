@@ -13,4 +13,5 @@ func RegisterResourceRouter(g *gin.RouterGroup) {
 	router.ModelRouter(group)      // 模型
 	router.FieldGroupRouter(group) // 字段分组
 	router.FieldRouter(group)      // 字段
+	router.DataRouter(group)       // 数据
 }

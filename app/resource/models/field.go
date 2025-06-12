@@ -44,7 +44,7 @@ const (
 	FieldTypeEnumMulti   FieldType = "enumMulti"
 	FieldTypeDate        FieldType = "date"
 	FieldTypeTime        FieldType = "time"
-	FieldTypeDateTime    FieldType = "dateTime"
+	FieldTypeDateTime    FieldType = "datetime"
 	FieldTypeLongString  FieldType = "longString"
 	FieldTypeUser        FieldType = "user"
 	FieldTypeTimeZone    FieldType = "timeZone"
@@ -119,22 +119,21 @@ type FloatOptions struct {
 	Default float64 `json:"default"`
 }
 
+type EnumOption struct {
+	ID    string `json:"id"`
+	Value string `json:"value"`
+}
+
 // EnumOptions 枚举配置，选项
 type EnumOptions struct {
-	Options []struct {
-		ID    string `json:"id"`
-		Value string `json:"value"`
-	} `json:"options"`
-	Default string `json:"default"`
+	Options []EnumOption `json:"options"`
+	Default string       `json:"default"`
 }
 
 // EnumMultiOptions 多选枚举配置，选项
 type EnumMultiOptions struct {
-	Options []struct {
-		ID    string `json:"id"`
-		Value string `json:"value"`
-	} `json:"options"`
-	Default []string `json:"default"`
+	Options []EnumOption `json:"options"`
+	Default []string     `json:"default"`
 }
 
 // DefaultOptions 用户、日期、时间、日期时间、时区的配置，默认值

@@ -59,21 +59,6 @@ func VerifyData(data *models.Data) (err error) {
 			return
 		}
 
-		//FieldTypeShortString FieldType = "shortString"
-		//FieldTypeNumber      FieldType = "number"
-		//FieldTypeFloat       FieldType = "float"
-		//FieldTypeEnum        FieldType = "enum"
-		//FieldTypeEnumMulti   FieldType = "enumMulti"
-		//FieldTypeDate        FieldType = "date"
-		//FieldTypeTime        FieldType = "time"
-		//FieldTypeDateTime    FieldType = "dateTime"
-		//FieldTypeLongString  FieldType = "longString"
-		//FieldTypeUser        FieldType = "user"
-		//FieldTypeTimeZone    FieldType = "timeZone"
-		//FieldTypeBoolean     FieldType = "boolean"
-		//FieldTypeList        FieldType = "list"
-		//FieldTypeTable       FieldType = "table"
-
 		switch field.Type {
 		case models.FieldTypeShortString, models.FieldTypeLongString:
 			if field.IsRequired && value.(string) == "" {
@@ -113,20 +98,7 @@ func VerifyData(data *models.Data) (err error) {
 		case models.FieldTypeNumber, models.FieldTypeFloat:
 			if data.Id != "" { // data.Id 不等于空则是更新
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
-					var newValue, oldValue float64
-					switch v := value.(type) {
-					case float64:
-						newValue = v
-					case int:
-						newValue = float64(v)
-					}
-					switch v := oldDataMap[key].(type) {
-					case float64:
-						oldValue = v
-					case int:
-						oldValue = float64(v)
-					}
-					if newValue != oldValue {
+					if value.(float64) != oldDataMap[key].(float64) {
 						err = fmt.Errorf("field %s cannot be edited", key)
 						return
 					}
@@ -140,22 +112,14 @@ func VerifyData(data *models.Data) (err error) {
 					return
 				}
 
-				var v float64
-				switch val := value.(type) {
-				case float64:
-					v = val
-				case int:
-					v = float64(val)
-				}
-
 				minValue, minOk := options["min"]
-				if minOk && v < minValue {
+				if minOk && value.(float64) < minValue {
 					err = fmt.Errorf("field %s must be greater than or equal to %v", key, minValue)
 					return
 				}
 
 				maxValue, maxOk := options["max"]
-				if maxOk && v > maxValue {
+				if maxOk && value.(float64) > maxValue {
 					err = fmt.Errorf("field %s must be less than or equal to %v", key, maxValue)
 					return
 				}
@@ -163,19 +127,21 @@ func VerifyData(data *models.Data) (err error) {
 		case models.FieldTypeEnum, models.FieldTypeEnumMulti:
 			if len(field.Options) > 0 {
 				var (
-					options       models.EnumOptions
 					enumOptionMap = make(map[string]struct{})
 				)
-				err = json.Unmarshal(field.Options, &options)
-				if err != nil {
-					return
-				}
-
-				for _, v := range options.Options {
-					enumOptionMap[v.ID] = struct{}{}
-				}
 
 				if field.Type == models.FieldTypeEnum {
+					var options models.EnumOptions
+
+					err = json.Unmarshal(field.Options, &options)
+					if err != nil {
+						return
+					}
+
+					for _, v := range options.Options {
+						enumOptionMap[v.ID] = struct{}{}
+					}
+
 					if field.IsRequired && value.(string) == "" {
 						err = fmt.Errorf("field %s is required", key)
 						return
@@ -195,6 +161,17 @@ func VerifyData(data *models.Data) (err error) {
 						return
 					}
 				} else if field.Type == models.FieldTypeEnumMulti {
+					var options models.EnumMultiOptions
+
+					err = json.Unmarshal(field.Options, &options)
+					if err != nil {
+						return
+					}
+
+					for _, v := range options.Options {
+						enumOptionMap[v.ID] = struct{}{}
+					}
+
 					values, ok := value.([]interface{})
 					if !ok {
 						err = fmt.Errorf("field %s value must be an array for enumMulti type", key)
@@ -275,7 +252,7 @@ func VerifyData(data *models.Data) (err error) {
 				// 校验是不是日期时间格式
 				_, err = time.Parse("2006-01-02 15:04:05", value.(string))
 				if err != nil {
-					err = fmt.Errorf("field %s value %s is not a valid dateTime", key, value)
+					err = fmt.Errorf("field %s value %s is not a valid datetime", key, value)
 					return
 				}
 			}
@@ -303,45 +280,46 @@ func VerifyData(data *models.Data) (err error) {
 				}
 			}
 		case models.FieldTypeList:
-			if field.IsRequired && len(value.([]interface{})) == 0 {
+			if field.IsRequired && value.(string) == "" {
 				err = fmt.Errorf("field %s is required", key)
 				return
 			}
 
 			if data.Id != "" { // data.Id 不等于空则是更新
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
-					oldValues, ok := oldDataMap[key].([]interface{})
-					if !ok {
-						err = fmt.Errorf("field %s old value must be an array for list type", key)
+					if value.(string) != oldDataMap[key].(string) {
+						err = fmt.Errorf("field %s cannot be edited", key)
 						return
 					}
+				}
+			}
 
-					if len(value.([]interface{})) != len(oldValues) {
-						err = fmt.Errorf("field %s cannot be edited, length mismatch", key)
-						return
-					}
+			if len(field.Options) > 0 {
+				var (
+					options       models.ListOptions
+					listOptionMap = make(map[string]struct{})
+				)
+				err = json.Unmarshal(field.Options, &options)
+				if err != nil {
+					return
+				}
 
-					valueMap := make(map[string]struct{})
-					for _, v := range value.([]interface{}) {
-						valueMap[v.(string)] = struct{}{}
-					}
+				for _, v := range options.Options {
+					listOptionMap[v] = struct{}{}
+				}
 
-					for _, v := range oldValues {
-						if _, ok := valueMap[v.(string)]; !ok {
-							err = fmt.Errorf("field %s cannot be edited, value mismatch", key)
-							return
-						}
-					}
+				if _, ok := listOptionMap[value.(string)]; !ok {
+					err = fmt.Errorf("field %s value %s is not in options", key, value)
+					return
 				}
 			}
 		case models.FieldTypeTable:
 			// 暂无需进行数据校验
+		default:
+			err = fmt.Errorf("unsupported field type %s for field %s", field.Type, key)
+			return
 		}
 	}
 
 	return
-}
-
-func VerifyDataHandler() {
-
 }

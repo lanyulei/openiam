@@ -9,7 +9,7 @@ import (
 )
 
 type Data struct {
-	ModelId string          `json:"model_id" gorm:"column:model_id;type:varchar(128);not null;comment:模型ID"`
+	ModelId string          `json:"model_id" gorm:"column:model_id;type:varchar(128);not null;comment:模型ID" binding:"required"`
 	Data    json.RawMessage `json:"data" gorm:"column:data;type:jsonb;not null;comment:数据"`
 	Status  DataStatus      `json:"status" gorm:"column:status;type:varchar(128);not null;comment:状态"`
 	models.BaseModel
