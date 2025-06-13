@@ -10,6 +10,7 @@ import (
 	"github.com/lanyulei/toolkit/db"
 )
 
+// VerifyData 验证数据
 func VerifyData(data *models.Data) (err error) {
 	var (
 		fieldList           []*models.Field
@@ -18,9 +19,25 @@ func VerifyData(data *models.Data) (err error) {
 		oldData             *models.Data
 	)
 
+	err = json.Unmarshal(data.Data, &dataMap)
+	if err != nil {
+		return
+	}
+
 	err = db.Orm().Model(&models.Field{}).Where("model_id = ?", data.ModelId).Find(&fieldList).Error
 	if err != nil {
 		return
+	}
+
+	for _, field := range fieldList {
+		if field.Type == models.FieldTypeTable {
+			continue
+		}
+		if _, ok := dataMap[field.Key]; !ok && field.IsRequired {
+			err = fmt.Errorf("field %s is required but not provided in data", field.Key)
+			return
+		}
+		fieldMap[field.Key] = field
 	}
 
 	// data.Id 不等于空则更新，反之则创建
@@ -38,20 +55,15 @@ func VerifyData(data *models.Data) (err error) {
 		}
 	}
 
-	for _, field := range fieldList {
-		fieldMap[field.Key] = field
-	}
-
-	err = json.Unmarshal(data.Data, &dataMap)
-	if err != nil {
-		return
-	}
-
 	for key, value := range dataMap { // dataMap 为新的数据
 		field, exists := fieldMap[key]
 		if !exists {
 			err = fmt.Errorf("field %s does not exist in model %s", key, data.ModelId)
 			return
+		}
+
+		if field.Type == models.FieldTypeTable {
+			continue
 		}
 
 		if field.IsRequired && value == nil {
@@ -68,7 +80,8 @@ func VerifyData(data *models.Data) (err error) {
 
 			if data.Id != "" { // data.Id 不等于空则是更新
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
-					if value.(string) != oldDataMap[key].(string) {
+					oldVal, ok := oldDataMap[key]
+					if !ok || value.(string) != oldVal.(string) {
 						err = fmt.Errorf("field %s cannot be edited", key)
 						return
 					}
@@ -98,7 +111,8 @@ func VerifyData(data *models.Data) (err error) {
 		case models.FieldTypeNumber, models.FieldTypeFloat:
 			if data.Id != "" { // data.Id 不等于空则是更新
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
-					if value.(float64) != oldDataMap[key].(float64) {
+					oldVal, ok := oldDataMap[key]
+					if !ok || value.(float64) != oldVal.(float64) {
 						err = fmt.Errorf("field %s cannot be edited", key)
 						return
 					}
@@ -149,7 +163,8 @@ func VerifyData(data *models.Data) (err error) {
 
 					if data.Id != "" { // data.Id 不等于空则是更新
 						if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
-							if value.(string) != oldDataMap[key].(string) {
+							oldVal, ok := oldDataMap[key]
+							if !ok || value.(string) != oldVal.(string) {
 								err = fmt.Errorf("field %s cannot be edited", key)
 								return
 							}
@@ -185,6 +200,11 @@ func VerifyData(data *models.Data) (err error) {
 
 					if data.Id != "" { // data.Id 不等于空则是更新
 						if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
+							if _, ok := oldDataMap[key]; !ok {
+								err = fmt.Errorf("field %s cannot be edited, old value not found", key)
+								return
+							}
+
 							oldValues, ok := oldDataMap[key].([]interface{})
 							if !ok {
 								err = fmt.Errorf("field %s old value must be an array for enumMulti type", key)
@@ -226,7 +246,8 @@ func VerifyData(data *models.Data) (err error) {
 
 			if data.Id != "" { // data.Id 不等于空则是更新
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
-					if value.(string) != oldDataMap[key].(string) {
+					oldVal, ok := oldDataMap[key]
+					if !ok || value.(string) != oldVal.(string) {
 						err = fmt.Errorf("field %s cannot be edited", key)
 						return
 					}
@@ -264,7 +285,8 @@ func VerifyData(data *models.Data) (err error) {
 
 			if data.Id != "" { // data.Id 不等于空则是更新
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
-					if value.(string) != oldDataMap[key].(string) {
+					oldVal, ok := oldDataMap[key]
+					if !ok || value.(string) != oldVal.(string) {
 						err = fmt.Errorf("field %s cannot be edited", key)
 						return
 					}
@@ -273,7 +295,8 @@ func VerifyData(data *models.Data) (err error) {
 		case models.FieldTypeBoolean:
 			if data.Id != "" { // data.Id 不等于空则是更新
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
-					if value.(bool) != oldDataMap[key].(bool) {
+					oldVal, ok := oldDataMap[key]
+					if !ok || value.(bool) != oldVal.(bool) {
 						err = fmt.Errorf("field %s cannot be edited", key)
 						return
 					}
@@ -287,7 +310,8 @@ func VerifyData(data *models.Data) (err error) {
 
 			if data.Id != "" { // data.Id 不等于空则是更新
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
-					if value.(string) != oldDataMap[key].(string) {
+					oldVal, ok := oldDataMap[key]
+					if !ok || value.(string) != oldVal.(string) {
 						err = fmt.Errorf("field %s cannot be edited", key)
 						return
 					}
