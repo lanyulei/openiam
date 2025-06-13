@@ -72,7 +72,9 @@ var (
 	DataListError            = response.Response{Code: 40245, Message: "获取模型数据列表失败"}
 	FieldKeyExistError       = response.Response{Code: 40246, Message: "模型字段键已存在"}
 	VerifyDataError          = response.Response{Code: 40247, Message: "验证数据失败"}
-	CreateDataError          = response.Response{Code: 40248, Message: "创建模型数据失败"}
-	UpdateDataError          = response.Response{Code: 40249, Message: "更新模型数据失败"}
+	CreateDataError          = response.Response{Code: 40248, Message: "创建数据失败"}
+	UpdateDataError          = response.Response{Code: 40249, Message: "更新数据失败"}
 	BuiltInFieldError        = response.Response{Code: 40250, Message: "不能是内置字段"}
+	BatchDeleteDataError     = response.Response{Code: 40251, Message: "批量删除数据失败"}
+	GetDataDetailsError      = response.Response{Code: 40252, Message: "获取数据详情失败"}
 )
