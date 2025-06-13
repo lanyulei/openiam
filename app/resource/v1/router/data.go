@@ -11,5 +11,6 @@ func DataRouter(g *gin.RouterGroup) {
 	{
 		router.GET("/:id", api.DataList)
 		router.POST("", api.CreateData)
+		router.PUT("/:id", api.UpdateData)
 	}
 }

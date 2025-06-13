@@ -276,7 +276,51 @@ func VerifyData(status models.VerifyDataStatus, data *models.Data) (err error) {
 					return
 				}
 			}
-		case models.FieldTypeUser, models.FieldTypeTimeZone:
+		case models.FieldTypeUser:
+			if field.IsRequired && len(value.([]interface{})) == 0 {
+				err = fmt.Errorf("field %s is required", key)
+				return
+			}
+
+			if status == models.VerifyDataStatusUpdate {
+				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
+					if _, ok := oldDataMap[key]; !ok {
+						err = fmt.Errorf("field %s cannot be edited, old value not found", key)
+						return
+					}
+
+					oldValues, ok := oldDataMap[key].([]interface{})
+					if !ok {
+						err = fmt.Errorf("field %s old value must be an array for user type", key)
+						return
+					}
+
+					newValues, ok := value.([]interface{})
+					if !ok {
+						err = fmt.Errorf("field %s new value must be an array for user type", key)
+						return
+					}
+
+					if len(newValues) != len(oldValues) {
+						err = fmt.Errorf("field %s cannot be edited, length mismatch", key)
+						return
+					}
+
+					valueMap := make(map[string]struct{})
+					for _, v := range newValues {
+						valueMap[v.(string)] = struct{}{}
+					}
+
+					for _, v := range oldValues {
+						if _, ok := valueMap[v.(string)]; !ok {
+							err = fmt.Errorf("field %s cannot be edited, value mismatch", key)
+							return
+						}
+					}
+				}
+			}
+
+		case models.FieldTypeTimeZone:
 			if field.IsRequired && value.(string) == "" {
 				err = fmt.Errorf("field %s is required", key)
 				return
