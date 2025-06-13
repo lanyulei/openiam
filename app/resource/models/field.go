@@ -165,3 +165,24 @@ type TableOptions struct {
 	} `json:"columns"`
 	Default []map[string]interface{} `json:"default"`
 }
+
+// 内置字段 Key
+const (
+	BuiltInFieldId        = "id"
+	BuiltInFieldModelId   = "model_id"
+	BuiltInFieldStatus    = "status"
+	BuiltInFieldCreatedAt = "create_time"
+	BuiltInFieldUpdatedAt = "update_time"
+	BuiltInFieldDeletedAt = "delete_time"
+)
+
+var (
+	BuiltInFields = map[string]struct{}{
+		BuiltInFieldId:        {},
+		BuiltInFieldModelId:   {},
+		BuiltInFieldStatus:    {},
+		BuiltInFieldCreatedAt: {},
+		BuiltInFieldUpdatedAt: {},
+		BuiltInFieldDeletedAt: {},
+	}
+)

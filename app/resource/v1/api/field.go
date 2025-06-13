@@ -46,6 +46,12 @@ func CreateField(c *gin.Context) {
 		return
 	}
 
+	// 不能是内置字段
+	if _, ok := models.BuiltInFields[field.Key]; ok {
+		response.Error(c, nil, respstatus.BuiltInFieldError)
+		return
+	}
+
 	// model_id、name 联合唯一
 	if err = db.Orm().Model(&models.Field{}).
 		Where("model_id = ? AND name = ?", field.ModelId, field.Name).
@@ -91,6 +97,12 @@ func UpdateField(c *gin.Context) {
 
 	if err = c.ShouldBindJSON(&field); err != nil {
 		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
+
+	// 不能是内置字段
+	if _, ok := models.BuiltInFields[field.Key]; ok {
+		response.Error(c, nil, respstatus.BuiltInFieldError)
 		return
 	}
 

@@ -8,6 +8,7 @@ var (
 	NoPermissionError      = response.Response{Code: 30004, Message: "暂无请求权限"}
 	InvalidParamsError     = response.Response{Code: 30005, Message: "请求参数错误"}
 	TokenNotFoundError     = response.Response{Code: 30008, Message: "令牌不存在"}
+	UnmarshalError         = response.Response{Code: 30009, Message: "反序列化错误"}
 
 	UserListError               = response.Response{Code: 40001, Message: "获取用户列表失败"}
 	GetUserError                = response.Response{Code: 40002, Message: "获取用户失败"}
@@ -73,4 +74,5 @@ var (
 	VerifyDataError          = response.Response{Code: 40247, Message: "验证数据失败"}
 	CreateDataError          = response.Response{Code: 40248, Message: "创建模型数据失败"}
 	UpdateDataError          = response.Response{Code: 40249, Message: "更新模型数据失败"}
+	BuiltInFieldError        = response.Response{Code: 40250, Message: "不能是内置字段"}
 )

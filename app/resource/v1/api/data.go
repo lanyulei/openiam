@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"openops/app/resource/models"
 	"openops/pkg/respstatus"
 	"openops/pkg/server"
@@ -13,13 +14,14 @@ import (
 
 func DataList(c *gin.Context) {
 	var (
-		err     error
-		list    []*models.Data
-		result  interface{}
-		modelId = c.Param("id")
+		err      error
+		list     []*models.Data
+		dataList []map[string]interface{}
+		result   interface{}
+		modelId  = c.Param("id")
 	)
 
-	dbConn := db.Orm().Model(&models.Data{}).Where("model_id =?", modelId)
+	dbConn := db.Orm().Model(&models.Data{}).Where("model_id = ?", modelId)
 
 	result, err = pagination.Paging(&pagination.Param{
 		C:  c,
@@ -29,6 +31,26 @@ func DataList(c *gin.Context) {
 		response.Error(c, err, respstatus.DataListError)
 		return
 	}
+
+	for _, data := range list {
+		dataMap := make(map[string]interface{})
+
+		err := json.Unmarshal(data.Data, &dataMap)
+		if err != nil {
+			response.Error(c, err, respstatus.UnmarshalError)
+			return
+		}
+
+		dataMap["id"] = data.Id
+		dataMap["model_id"] = data.ModelId
+		dataMap["status"] = data.Status
+		dataMap["create_time"] = data.CreatedAt
+		dataMap["update_time"] = data.UpdatedAt
+
+		dataList = append(dataList, dataMap)
+	}
+
+	result.(*pagination.Paginator).List = dataList
 
 	response.OK(c, result, "")
 }
