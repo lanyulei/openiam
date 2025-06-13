@@ -11,7 +11,7 @@ import (
 )
 
 // VerifyData 验证数据
-func VerifyData(data *models.Data) (err error) {
+func VerifyData(status models.VerifyDataStatus, data *models.Data) (err error) {
 	var (
 		fieldList           []*models.Field
 		fieldMap            = make(map[string]*models.Field)
@@ -40,8 +40,7 @@ func VerifyData(data *models.Data) (err error) {
 		fieldMap[field.Key] = field
 	}
 
-	// data.Id 不等于空则更新，反之则创建
-	if data.Id != "" {
+	if status == models.VerifyDataStatusUpdate {
 		err = db.Orm().Model(&models.Data{}).Where("id = ?", data.Id).Find(&oldData).Error
 		if err != nil {
 			return
@@ -78,7 +77,7 @@ func VerifyData(data *models.Data) (err error) {
 				return
 			}
 
-			if data.Id != "" { // data.Id 不等于空则是更新
+			if status == models.VerifyDataStatusUpdate {
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
 					oldVal, ok := oldDataMap[key]
 					if !ok || value.(string) != oldVal.(string) {
@@ -109,7 +108,7 @@ func VerifyData(data *models.Data) (err error) {
 				}
 			}
 		case models.FieldTypeNumber, models.FieldTypeFloat:
-			if data.Id != "" { // data.Id 不等于空则是更新
+			if status == models.VerifyDataStatusUpdate {
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
 					oldVal, ok := oldDataMap[key]
 					if !ok || value.(float64) != oldVal.(float64) {
@@ -161,7 +160,7 @@ func VerifyData(data *models.Data) (err error) {
 						return
 					}
 
-					if data.Id != "" { // data.Id 不等于空则是更新
+					if status == models.VerifyDataStatusUpdate {
 						if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
 							oldVal, ok := oldDataMap[key]
 							if !ok || value.(string) != oldVal.(string) {
@@ -198,7 +197,7 @@ func VerifyData(data *models.Data) (err error) {
 						return
 					}
 
-					if data.Id != "" { // data.Id 不等于空则是更新
+					if status == models.VerifyDataStatusUpdate {
 						if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
 							if _, ok := oldDataMap[key]; !ok {
 								err = fmt.Errorf("field %s cannot be edited, old value not found", key)
@@ -244,7 +243,7 @@ func VerifyData(data *models.Data) (err error) {
 				return
 			}
 
-			if data.Id != "" { // data.Id 不等于空则是更新
+			if status == models.VerifyDataStatusUpdate {
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
 					oldVal, ok := oldDataMap[key]
 					if !ok || value.(string) != oldVal.(string) {
@@ -283,7 +282,7 @@ func VerifyData(data *models.Data) (err error) {
 				return
 			}
 
-			if data.Id != "" { // data.Id 不等于空则是更新
+			if status == models.VerifyDataStatusUpdate {
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
 					oldVal, ok := oldDataMap[key]
 					if !ok || value.(string) != oldVal.(string) {
@@ -293,7 +292,7 @@ func VerifyData(data *models.Data) (err error) {
 				}
 			}
 		case models.FieldTypeBoolean:
-			if data.Id != "" { // data.Id 不等于空则是更新
+			if status == models.VerifyDataStatusUpdate {
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
 					oldVal, ok := oldDataMap[key]
 					if !ok || value.(bool) != oldVal.(bool) {
@@ -308,7 +307,7 @@ func VerifyData(data *models.Data) (err error) {
 				return
 			}
 
-			if data.Id != "" { // data.Id 不等于空则是更新
+			if status == models.VerifyDataStatusUpdate {
 				if !field.IsEdit { // 如果字段不可编辑，则需要验证旧数据
 					oldVal, ok := oldDataMap[key]
 					if !ok || value.(string) != oldVal.(string) {

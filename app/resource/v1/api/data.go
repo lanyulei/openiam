@@ -45,7 +45,7 @@ func CreateData(c *gin.Context) {
 		return
 	}
 
-	err = server.VerifyData(&data)
+	err = server.VerifyData(models.VerifyDataStatusCreate, &data)
 	if err != nil {
 		response.Error(c, err, respstatus.VerifyDataError)
 		return
@@ -54,6 +54,37 @@ func CreateData(c *gin.Context) {
 	err = db.Orm().Create(&data).Error
 	if err != nil {
 		response.Error(c, err, respstatus.CreateDataError)
+		return
+	}
+
+	response.OK(c, data, "")
+}
+
+// UpdateData 更新
+func UpdateData(c *gin.Context) {
+	var (
+		err  error
+		data models.Data
+	)
+
+	if err = c.ShouldBindJSON(&data); err != nil {
+		response.Error(c, err, respstatus.InvalidParamsError)
+		return
+	}
+
+	err = server.VerifyData(models.VerifyDataStatusUpdate, &data)
+	if err != nil {
+		response.Error(c, err, respstatus.VerifyDataError)
+		return
+	}
+
+	err = db.Orm().Model(&models.Data{}).Where("id = ?", data.Id).Updates(map[string]interface{}{
+		"model_id": data.ModelId,
+		"data":     data.Data,
+		"status":   data.Status,
+	}).Error
+	if err != nil {
+		response.Error(c, err, respstatus.UpdateDataError)
 		return
 	}
 

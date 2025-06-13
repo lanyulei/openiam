@@ -37,3 +37,10 @@ const (
 	DataStatusRecycle  DataStatus = "recycle"
 	DataStatusDeleted  DataStatus = "deleted"
 )
+
+type VerifyDataStatus string
+
+const (
+	VerifyDataStatusCreate VerifyDataStatus = "create" // 创建
+	VerifyDataStatusUpdate VerifyDataStatus = "update" // 更新
+)

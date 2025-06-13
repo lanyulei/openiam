@@ -72,4 +72,5 @@ var (
 	FieldKeyExistError       = response.Response{Code: 40246, Message: "模型字段键已存在"}
 	VerifyDataError          = response.Response{Code: 40247, Message: "验证数据失败"}
 	CreateDataError          = response.Response{Code: 40248, Message: "创建模型数据失败"}
+	UpdateDataError          = response.Response{Code: 40249, Message: "更新模型数据失败"}
 )
