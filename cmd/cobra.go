@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"openops/cmd/crypto"
 	"openops/cmd/migrate"
 	"openops/cmd/server"
 	"os"
@@ -31,6 +32,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(server.StartCmd)
 	rootCmd.AddCommand(migrate.StartCmd)
+	rootCmd.AddCommand(crypto.StartCmd)
 }
 
 func tip() {

@@ -17,7 +17,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lanyulei/toolkit/db"
 	"github.com/lanyulei/toolkit/logger"
-	"github.com/lanyulei/toolkit/redis"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -65,6 +64,11 @@ func setup() {
 		viper.GetInt("db.maxOpenConn"),
 		viper.GetInt("db.connMaxLifetime"),
 	)
+
+	err := initData()
+	if err != nil {
+		logger.Fatalf("init data error: %s", err.Error())
+	}
 }
 
 func run() (err error) {
@@ -85,9 +89,6 @@ func run() (err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer func(cancel context.CancelFunc) {
 		cancel()
-
-		// 关闭 redis 连接
-		redis.StopChRedis()
 	}(cancel)
 
 	go func() {

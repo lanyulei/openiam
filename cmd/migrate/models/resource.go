@@ -10,4 +10,5 @@ var ResourceModels = []interface{}{
 	&models.ModelRelation{},
 	&models.ModelUnique{},
 	&models.Data{},
+	&models.CloudAccount{},
 }

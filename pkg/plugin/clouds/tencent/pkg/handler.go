@@ -1,0 +1,111 @@
+package pkg
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"openops/pkg/plugin/clouds"
+	"openops/pkg/plugin/clouds/tencent/pkg/cvm"
+	"os"
+
+	"github.com/lanyulei/toolkit/cipher"
+)
+
+/*
+  @Author : lanyulei
+  @Desc :
+*/
+
+type HandlerInterface interface {
+	Get(ctx context.Context) (result []byte, err error)
+	Post(ctx context.Context) (result []byte, err error)
+	Put(ctx context.Context) (result []byte, err error)
+	Delete(ctx context.Context) (result []byte, err error)
+}
+
+type handler struct {
+	resource   clouds.CloudResourceType
+	region     string
+	ak         string
+	sk         string
+	data       map[string]interface{}
+	handleType clouds.HandleType
+}
+
+func NewHandler(resource clouds.CloudResourceType, region string, handleType clouds.HandleType, data []byte) (HandlerInterface, error) {
+	var (
+		err              error
+		akBytes, skBytes []byte
+	)
+
+	_handler := handler{
+		resource:   resource,
+		region:     region,
+		handleType: handleType,
+		ak:         os.Getenv("TENCENT_ACCESS_KEY_ID"),
+		sk:         os.Getenv("TENCENT_ACCESS_KEY_SECRET"),
+	}
+
+	_handler.data = make(map[string]interface{})
+
+	cryptoEnable := os.Getenv("OPENOPS_CRYPTO_ENABLE") // true or false
+	if cryptoEnable == "true" {
+		cryptoAesKey := os.Getenv("OPENOPS_CRYPTO_AES_KEY")
+		if cryptoAesKey != "" && _handler.ak != "" && _handler.sk != "" {
+			// ak, sk 任何一个为空，则表示需要走默认权限认证
+			akBytes, err = cipher.AesDecryptCBC([]byte(cryptoAesKey), []byte(_handler.ak))
+			if err == nil {
+				_handler.ak = string(akBytes)
+			}
+			skBytes, err = cipher.AesDecryptCBC([]byte(cryptoAesKey), []byte(_handler.sk))
+			if err == nil {
+				_handler.sk = string(skBytes)
+			}
+		}
+	}
+
+	if data != nil && string(data) != "" {
+		err = json.Unmarshal(data, &_handler.data)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &_handler, nil
+}
+
+func (h *handler) Get(ctx context.Context) (result []byte, err error) {
+	var (
+		_cvm cvm.Interface
+	)
+
+	switch h.resource {
+	case clouds.CloudResourceHost:
+		switch h.handleType {
+		case clouds.DescribeInstances:
+			_cvm, err = cvm.New(h.ak, h.sk, h.region, "cvm.tencentcloudapi.com")
+			if err != nil {
+				return
+			}
+
+			result, err = _cvm.DescribeInstances(ctx, h.data)
+		default:
+			err = fmt.Errorf("handle type %s not support", h.handleType)
+		}
+	default:
+		err = fmt.Errorf("resource type %s not support", h.resource)
+	}
+	return
+}
+
+func (h *handler) Post(ctx context.Context) (result []byte, err error) {
+	return
+}
+
+func (h *handler) Put(ctx context.Context) (result []byte, err error) {
+	return
+}
+
+func (h *handler) Delete(ctx context.Context) (result []byte, err error) {
+	return
+}

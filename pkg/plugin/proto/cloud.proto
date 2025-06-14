@@ -1,0 +1,56 @@
+syntax = "proto3";
+package proto;
+option go_package = "./proto";
+
+message GetRequest {
+    string resource = 1;
+    string region = 2;
+    string handleType = 3;
+    bytes data = 4;
+}
+
+message GetResponse {
+    bytes result = 1;
+}
+
+message CreateRequest {
+    string resource = 1;
+    string region = 2;
+    string handleType = 3;
+    bytes data = 4;
+}
+
+message CreateResponse {
+    bytes result = 1;
+}
+
+message UpdateRequest {
+    string resource = 1;
+    string region = 2;
+    string handleType = 3;
+    bytes data = 4;
+}
+
+message UpdateResponse {
+    bytes result = 1;
+}
+
+message DeleteRequest {
+    string resource = 1;
+    string region = 2;
+    string handleType = 3;
+    bytes data = 4;
+}
+
+message DeleteResponse {
+    bytes result = 1;
+}
+
+message Empty {}
+
+service CloudProvider {
+    rpc Get(GetRequest) returns (GetResponse);
+    rpc Post(CreateRequest) returns (CreateResponse);
+    rpc Put(UpdateRequest) returns (UpdateResponse);
+    rpc Delete(DeleteRequest) returns (DeleteResponse);
+}
