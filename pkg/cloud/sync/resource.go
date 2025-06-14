@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"openops/app/resource/models"
+	"openops/pkg/plugin"
+	"openops/pkg/tools/comparemaps"
 	"path/filepath"
-	"solar/app/cmdb/models"
-	"solar/pkg/plugin"
-	"solar/pkg/tools/comparemaps"
 	"time"
 
 	"github.com/lanyulei/toolkit/db"
@@ -38,8 +38,8 @@ func CloudSyncResource(cloudAccountId int) {
 		cloudModels       []models.CloudModels
 		syncStatus        = models.SyncStatusSuccess
 		syncMessage       string
-		logicResourceMap  = make(map[int]string)
-		logicHandleMap    = make(map[int]string)
+		logicResourceMap  = make(map[string]string)
+		logicHandleMap    = make(map[string]string)
 		logicResourceList []models.LogicResource
 		logicHandleList   []models.LogicHandle
 	)
@@ -115,7 +115,7 @@ func CloudSyncResource(cloudAccountId int) {
 			var (
 				resp         []byte
 				result       []plugin.Response
-				resourceInfo models.Resource
+				resourceInfo models.Data
 			)
 
 			pluginPath := filepath.Join(viper.GetString("plugin.path"), cloudInfo.PluginName)
@@ -134,16 +134,16 @@ func CloudSyncResource(cloudAccountId int) {
 			}
 
 			for _, instance := range result {
-				err = db.Orm().Model(&models.Resource{}).Where("model_id = ? and unique_id = ?", cloudModel.ModelId, instance.UniqueId).Find(&resourceInfo).Error
+				err = db.Orm().Model(&models.Data{}).Where("model_id = ? and unique_id = ?", cloudModel.ModelId, instance.UniqueId).Find(&resourceInfo).Error
 				if err != nil {
 					err = fmt.Errorf("get resource failed with error: %v", err.Error())
 					syncStatus = models.SyncStatusFailed
 					goto UpdateSyncStatus
 				}
 
-				if resourceInfo.Id != 0 {
+				if resourceInfo.Id != "" {
 					sourceContent := make(map[string]interface{})
-					err = json.Unmarshal(resourceInfo.Content, &sourceContent)
+					err = json.Unmarshal(resourceInfo.Data, &sourceContent)
 					if err != nil {
 						err = fmt.Errorf("unserialize resource content failed with error: %v", err.Error())
 						syncStatus = models.SyncStatusFailed
@@ -161,7 +161,7 @@ func CloudSyncResource(cloudAccountId int) {
 					// 比较资源内容是否一致
 					ok := comparemaps.CompareMaps(sourceContent, targetContent)
 					if !ok {
-						err = db.Orm().Model(&models.Resource{}).Where("model_id = ? and unique_id = ?", cloudModel.ModelId, instance.UniqueId).Updates(map[string]interface{}{
+						err = db.Orm().Model(&models.Data{}).Where("model_id = ? and unique_id = ?", cloudModel.ModelId, instance.UniqueId).Updates(map[string]interface{}{
 							"content": instance.Content,
 						}).Error
 						if err != nil {
@@ -171,10 +171,10 @@ func CloudSyncResource(cloudAccountId int) {
 						}
 					}
 				} else {
-					err = db.Orm().Create(&models.Resource{
+					err = db.Orm().Create(&models.Data{
 						ModelId:  cloudModel.ModelId,
 						UniqueId: instance.UniqueId,
-						Content:  instance.Content,
+						Data:     instance.Content,
 					}).Error
 					if err != nil {
 						err = fmt.Errorf("create resource failed with error: %v", err.Error())

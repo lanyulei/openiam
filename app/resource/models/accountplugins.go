@@ -1,6 +1,8 @@
 package models
 
 import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"openops/common/models"
 )
 
@@ -16,6 +18,11 @@ type AccountPlugins struct {
 	models.BaseModel
 }
 
-func (AccountPlugins) TableName() string {
+func (a *AccountPlugins) TableName() string {
 	return "resource_account_plugins"
+}
+
+func (a *AccountPlugins) BeforeCreate(tx *gorm.DB) (err error) {
+	a.Id = uuid.New().String()
+	return
 }

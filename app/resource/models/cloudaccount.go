@@ -1,6 +1,8 @@
 package models
 
 import (
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"openops/common/models"
 	"openops/pkg/cloud/types"
 	"time"
@@ -28,12 +30,18 @@ type CloudAccount struct {
 	SyncStatus   SyncStatusType  `gorm:"column:sync_status;type:varchar(45);comment:同步状态" json:"sync_status"` // success、running、failed
 	SyncMessage  string          `gorm:"column:sync_message;type:text;comment:同步信息" json:"sync_message"`
 	Available    bool            `gorm:"column:available;type:boolean;comment:是否可用" json:"available"` // 账号是否可连通，true: 可用，false: 不可用
+	PluginName   string          `gorm:"column:plugin_name;type:varchar(128);comment:插件名称" json:"plugin_name"`
 	LastSyncTime time.Time       `gorm:"column:last_sync_time;comment:最后同步时间" json:"last_sync_time"`
 	Type         string          `gorm:"column:type;type:varchar(45);comment:账号类型" json:"type"` // common 通用
 	Remarks      string          `gorm:"column:remarks;type:text;comment:备注" json:"remarks"`
 	models.BaseModel
 }
 
-func (CloudAccount) TableName() string {
+func (c *CloudAccount) TableName() string {
 	return "resource_cloud_account"
+}
+
+func (c *CloudAccount) BeforeCreate(tx *gorm.DB) (err error) {
+	c.Id = uuid.New().String()
+	return
 }
