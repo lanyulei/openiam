@@ -12,8 +12,8 @@ import (
 */
 
 type LogicResource struct {
-	Label   string `gorm:"column:label;type:varchar(128);comment:标签" json:"label"`
-	Value   string `gorm:"column:value;type:varchar(128);comment:值" json:"value"`
+	Title   string `gorm:"column:title;type:varchar(128);comment:标题" json:"title"` // 云主机
+	Name    string `gorm:"column:name;type:varchar(128);comment:名称" json:"name"`   // Host
 	Remarks string `gorm:"column:remarks;type:varchar(1024);comment:备注" json:"remarks"`
 	models.BaseModel
 }

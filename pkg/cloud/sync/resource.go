@@ -89,7 +89,7 @@ func CloudSyncResource(cloudAccountId string) {
 	}
 
 	for _, logicResource := range logicResourceList {
-		logicResourceMap[logicResource.Id] = logicResource.Value
+		logicResourceMap[logicResource.Id] = logicResource.Name
 	}
 
 	// 获取逻辑处理

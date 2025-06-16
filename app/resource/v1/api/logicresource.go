@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/lanyulei/toolkit/pagination"
 	"openops/app/resource/models"
 	"openops/pkg/respstatus"
 
@@ -17,47 +18,28 @@ import (
 // LogicResourceList 获取逻辑资源列表
 func LogicResourceList(c *gin.Context) {
 	var (
-		err           error
-		logicResource []models.LogicResource
-		query         struct {
-			Label          string `form:"label"`
-			CloudAccountId int    `form:"cloud_account_id"`
-		}
-		idList []int
+		err    error
+		result interface{}
+		list   []*models.LogicResource
 	)
-
-	err = c.ShouldBindQuery(&query)
-	if err != nil {
-		response.Error(c, err, respstatus.InvalidParamsError)
-		return
-	}
 
 	dbConn := db.Orm().Model(&models.LogicResource{})
 
-	if query.Label != "" {
-		dbConn = dbConn.Where("label like ?", "%"+query.Label+"%")
+	name := c.Query("name")
+	if name != "" {
+		dbConn = dbConn.Or("name like ? or title like ?", "%"+name+"%", "%"+name+"%")
 	}
 
-	if query.CloudAccountId != 0 {
-		err = db.Orm().Model(&models.CloudModels{}).Where("cloud_account_id = ?", query.CloudAccountId).Pluck("DISTINCT logic_resource", &idList).Error
-		if err != nil {
-			response.Error(c, err, respstatus.GetCloudModelError)
-			return
-		}
-		if len(idList) > 0 {
-			dbConn = dbConn.Where("id in (?)", idList)
-		} else {
-			dbConn = dbConn.Where("id in (0)")
-		}
-	}
-
-	err = dbConn.Find(&logicResource).Error
+	result, err = pagination.Paging(&pagination.Param{
+		C:  c,
+		DB: dbConn,
+	}, &list)
 	if err != nil {
-		response.Error(c, err, respstatus.GetLogicResourceError)
+		response.Error(c, err, respstatus.LogicResourceListError)
 		return
 	}
 
-	response.OK(c, logicResource, "")
+	response.OK(c, result, "")
 }
 
 func LogicResourceDetails(c *gin.Context) {
@@ -90,8 +72,8 @@ func CreateLogicResource(c *gin.Context) {
 		return
 	}
 
-	// label 和 value 联合唯一
-	err = db.Orm().Model(&models.LogicResource{}).Where("label = ? AND value = ?", logicResource.Label, logicResource.Value).Count(&count).Error
+	// title 和 name 联合唯一
+	err = db.Orm().Model(&models.LogicResource{}).Where("title = ? AND name = ?", logicResource.Title, logicResource.Name).Count(&count).Error
 	if err != nil {
 		response.Error(c, err, respstatus.GetLogicResourceError)
 		return
@@ -126,7 +108,7 @@ func UpdateLogicResource(c *gin.Context) {
 		return
 	}
 
-	err = db.Orm().Model(&models.LogicResource{}).Where("label = ? AND value = ? and id != ?", logicResource.Label, logicResource.Value, id).Count(&count).Error
+	err = db.Orm().Model(&models.LogicResource{}).Where("title = ? AND name = ? and id != ?", logicResource.Title, logicResource.Name, id).Count(&count).Error
 	if err != nil {
 		response.Error(c, err, respstatus.GetLogicResourceError)
 		return
@@ -138,8 +120,8 @@ func UpdateLogicResource(c *gin.Context) {
 	}
 
 	err = db.Orm().Model(&models.LogicResource{}).Where("id = ?", id).Updates(map[string]interface{}{
-		"label": logicResource.Label,
-		"value": logicResource.Value,
+		"title": logicResource.Title,
+		"name":  logicResource.Name,
 	}).Error
 	if err != nil {
 		response.Error(c, err, respstatus.UpdateLogicResourceError)

@@ -12,9 +12,9 @@ import (
 */
 
 type LogicHandle struct {
-	LogicResource string `gorm:"column:logic_resource;type:varchar(128);comment:逻辑资源" json:"logic_resource" binding:"required"` // Host、Disk
-	Name          string `gorm:"column:name;type:varchar(128);comment:逻辑处理名称" json:"name"`                                      // ResourceList、CreateResource
-	Remarks       string `gorm:"column:remarks;type:varchar(512);comment:备注" json:"remarks"`
+	Title   string `gorm:"column:title;type:varchar(128);comment:标题" json:"title" binding:"required"` // 资源列表、创建资源
+	Name    string `gorm:"column:name;type:varchar(128);comment:名称" json:"name" binding:"required"`   // ResourceList、CreateResource
+	Remarks string `gorm:"column:remarks;type:varchar(512);comment:备注" json:"remarks"`
 	models.BaseModel
 }
 

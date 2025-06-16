@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/lanyulei/toolkit/pagination"
 	"openops/app/resource/models"
 	"openops/pkg/respstatus"
 
@@ -14,16 +15,41 @@ import (
   @Desc :
 */
 
+func LogicHandleList(c *gin.Context) {
+	var (
+		err    error
+		result interface{}
+		list   []*models.LogicHandle
+	)
+
+	name := c.Query("name")
+	dbConn := db.Orm().Model(&models.LogicHandle{})
+	if name != "" {
+		dbConn = dbConn.Where("name like ?", "%"+name+"%")
+	}
+
+	result, err = pagination.Paging(&pagination.Param{
+		C:  c,
+		DB: dbConn,
+	}, &list)
+	if err != nil {
+		response.Error(c, err, respstatus.LogicHandleListError)
+		return
+	}
+
+	response.OK(c, result, "")
+}
+
 // LogicHandleListById 获取指定资源的逻辑处理列表
 func LogicHandleListById(c *gin.Context) {
 	var (
 		err          error
 		logicHandles []models.LogicHandle
 		query        struct {
-			LogicResource int    `form:"logic_resource"`
-			Name          string `form:"name"`
-			Remarks       string `form:"remarks"`
+			Name    string `form:"name"`
+			Remarks string `form:"remarks"`
 		}
+		id = c.Param("id")
 	)
 
 	err = c.ShouldBindQuery(&query)
@@ -42,8 +68,8 @@ func LogicHandleListById(c *gin.Context) {
 		dbConn = dbConn.Where("remarks like ?", "%"+query.Remarks+"%")
 	}
 
-	if query.LogicResource != 0 {
-		dbConn = dbConn.Where("logic_resource = ?", query.LogicResource)
+	if id != "" {
+		dbConn = dbConn.Where("logic_resource = ?", id)
 	}
 
 	err = dbConn.Find(&logicHandles).Error
@@ -69,7 +95,7 @@ func CreateLogicHandle(c *gin.Context) {
 	}
 
 	// name 和 logic_resource 联合唯一
-	err = db.Orm().Model(&models.LogicHandle{}).Where("name = ? AND logic_resource = ?", logicHandle.Name, logicHandle.LogicResource).Count(&count).Error
+	err = db.Orm().Model(&models.LogicHandle{}).Where("name = ?", logicHandle.Name).Count(&count).Error
 	if err != nil {
 		response.Error(c, err, respstatus.GetLogicHandleError)
 		return
@@ -103,7 +129,7 @@ func UpdateLogicHandle(c *gin.Context) {
 		return
 	}
 
-	err = db.Orm().Model(&models.LogicHandle{}).Where("name = ? AND logic_resource = ? and id != ?", logicHandle.Name, logicHandle.LogicResource, id).Count(&count).Error
+	err = db.Orm().Model(&models.LogicHandle{}).Where("name = ? AND logic_resource = ? and id != ?", logicHandle.Name, id).Count(&count).Error
 	if err != nil {
 		response.Error(c, err, respstatus.GetLogicHandleError)
 		return
