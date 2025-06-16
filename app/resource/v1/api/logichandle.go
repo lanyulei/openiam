@@ -20,10 +20,11 @@ func LogicHandleList(c *gin.Context) {
 		err    error
 		result interface{}
 		list   []*models.LogicHandle
+		id     = c.Param("id")
 	)
 
 	name := c.Query("name")
-	dbConn := db.Orm().Model(&models.LogicHandle{})
+	dbConn := db.Orm().Model(&models.LogicHandle{}).Where("logic_resource_id = ?", id)
 	if name != "" {
 		dbConn = dbConn.Where("name like ?", "%"+name+"%")
 	}
@@ -38,47 +39,6 @@ func LogicHandleList(c *gin.Context) {
 	}
 
 	response.OK(c, result, "")
-}
-
-// LogicHandleListById 获取指定资源的逻辑处理列表
-func LogicHandleListById(c *gin.Context) {
-	var (
-		err          error
-		logicHandles []models.LogicHandle
-		query        struct {
-			Name    string `form:"name"`
-			Remarks string `form:"remarks"`
-		}
-		id = c.Param("id")
-	)
-
-	err = c.ShouldBindQuery(&query)
-	if err != nil {
-		response.Error(c, err, respstatus.InvalidParamsError)
-		return
-	}
-
-	dbConn := db.Orm().Model(&models.LogicHandle{})
-
-	if query.Name != "" {
-		dbConn = dbConn.Where("name like ?", "%"+query.Name+"%")
-	}
-
-	if query.Remarks != "" {
-		dbConn = dbConn.Where("remarks like ?", "%"+query.Remarks+"%")
-	}
-
-	if id != "" {
-		dbConn = dbConn.Where("logic_resource = ?", id)
-	}
-
-	err = dbConn.Find(&logicHandles).Error
-	if err != nil {
-		response.Error(c, err, respstatus.GetLogicHandleError)
-		return
-	}
-
-	response.OK(c, logicHandles, "")
 }
 
 func CreateLogicHandle(c *gin.Context) {

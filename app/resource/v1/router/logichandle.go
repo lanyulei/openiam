@@ -9,8 +9,7 @@ import (
 func LogicHandleRouter(g *gin.RouterGroup) {
 	router := g.Group("/logic-handle")
 	{
-		router.GET("", api.LogicHandleList) // 获取逻辑处理列表
-		router.GET("/:id", api.LogicHandleListById)
+		router.GET("/:id", api.LogicHandleList) // 获取逻辑处理列表
 		router.POST("", api.CreateLogicHandle)
 		router.PUT("/:id", api.UpdateLogicHandle)
 		router.DELETE("/:id", api.DeleteLogicHandle)
