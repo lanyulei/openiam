@@ -108,4 +108,5 @@ var (
 	UpdateLogicResourceError      = response.Response{Code: 40410, Message: "更新逻辑资源失败"}
 	LogicResourceBindError        = response.Response{Code: 40411, Message: "逻辑资源已绑定逻辑处理，无法删除"}
 	DeleteLogicResourceError      = response.Response{Code: 40412, Message: "删除逻辑资源失败"}
+	GetPluginListError            = response.Response{Code: 40413, Message: "获取插件列表失败"}
 )

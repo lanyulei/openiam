@@ -21,4 +21,6 @@ func RegisterResourceRouter(g *gin.RouterGroup) {
 	router.CloudModelsRouter(group)   // 云模型
 	router.CloudAccountRouter(group)  // 云账号
 
+	router.PluginRouter(group) // 插件
+
 }

@@ -238,7 +238,7 @@ func SyncCloudResource(c *gin.Context) {
 	var (
 		err    error
 		params struct {
-			CloudAccountId int `json:"cloud_account_id"`
+			CloudAccountId string `json:"cloud_account_id"`
 		}
 	)
 
@@ -258,7 +258,7 @@ func SyncCloudResource(c *gin.Context) {
 	}
 
 	// 同步云资源
-	go func(cloudAccountId int) {
+	go func(cloudAccountId string) {
 		sync.CloudSyncResource(cloudAccountId)
 	}(params.CloudAccountId)
 

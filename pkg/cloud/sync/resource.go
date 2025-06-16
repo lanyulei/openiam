@@ -20,7 +20,7 @@ import (
   @Desc :
 */
 
-func CloudSyncResource(cloudAccountId int) {
+func CloudSyncResource(cloudAccountId string) {
 	defer func() {
 		err := recover()
 		if err != nil {
