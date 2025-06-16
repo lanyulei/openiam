@@ -20,6 +20,15 @@ const (
 	TencentCloud CloudName = "TencentCloud" // 腾讯云
 )
 
+type CloudInfoStruct struct {
+	Name string `json:"name"` // 云服务商名称
+}
+
+var CloudInfo = map[CloudName]CloudInfoStruct{
+	AliCloud:     {Name: "阿里云"},
+	TencentCloud: {Name: "腾讯云"},
+}
+
 type CouldResourceType string
 
 const (

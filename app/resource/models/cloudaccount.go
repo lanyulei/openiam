@@ -34,6 +34,7 @@ type CloudAccount struct {
 	LastSyncTime time.Time       `gorm:"column:last_sync_time;comment:最后同步时间" json:"last_sync_time"`
 	Type         string          `gorm:"column:type;type:varchar(45);comment:账号类型" json:"type"` // common 通用
 	Remarks      string          `gorm:"column:remarks;type:text;comment:备注" json:"remarks"`
+	ProviderName string          `gorm:"-" json:"provider_name"`
 	models.BaseModel
 }
 

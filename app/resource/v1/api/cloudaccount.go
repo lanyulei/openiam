@@ -3,6 +3,7 @@ package api
 import (
 	"openops/app/resource/models"
 	"openops/pkg/cloud/sync"
+	"openops/pkg/cloud/types"
 	"openops/pkg/crypto"
 	"openops/pkg/respstatus"
 
@@ -40,6 +41,10 @@ func CloudAccountList(c *gin.Context) {
 	if err != nil {
 		response.Error(c, err, respstatus.GetCloudAccountError)
 		return
+	}
+
+	for _, cloudAccount := range cloudAccountList {
+		cloudAccount.ProviderName = types.CloudInfo[cloudAccount.Provider].Name
 	}
 
 	response.OK(c, result, "")
