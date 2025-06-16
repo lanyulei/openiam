@@ -17,6 +17,7 @@ import (
 */
 
 type HandlerInterface interface {
+	List(ctx context.Context) (result []byte, err error)
 	Get(ctx context.Context) (result []byte, err error)
 	Post(ctx context.Context) (result []byte, err error)
 	Put(ctx context.Context) (result []byte, err error)
@@ -74,7 +75,7 @@ func NewHandler(resource clouds.CloudResourceType, region string, handleType clo
 	return &_handler, nil
 }
 
-func (h *handler) Get(ctx context.Context) (result []byte, err error) {
+func (h *handler) List(ctx context.Context) (result []byte, err error) {
 	var (
 		_ecs ecs.Interface
 	)
@@ -100,6 +101,10 @@ func (h *handler) Get(ctx context.Context) (result []byte, err error) {
 	default:
 		err = fmt.Errorf("resource type %s not support", h.resource)
 	}
+	return
+}
+
+func (h *handler) Get(ctx context.Context) (result []byte, err error) {
 	return
 }
 

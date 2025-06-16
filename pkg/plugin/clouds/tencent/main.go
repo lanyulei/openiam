@@ -16,6 +16,24 @@ import (
 
 type Tencent struct{}
 
+func (Tencent) List(ctx context.Context, resource, region, handleType string, data []byte) (result []byte, err error) {
+	var (
+		handler pkg.HandlerInterface
+	)
+
+	handler, err = pkg.NewHandler(clouds.CloudResourceType(resource), region, clouds.HandleType(handleType), data)
+	if err != nil {
+		return
+	}
+
+	result, err = handler.Get(ctx)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
 func (Tencent) Get(ctx context.Context, resource, region, handleType string, data []byte) (result []byte, err error) {
 	var (
 		handler pkg.HandlerInterface
