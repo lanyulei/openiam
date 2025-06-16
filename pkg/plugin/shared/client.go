@@ -20,6 +20,27 @@ type grpcClient struct {
 	doneCtx    context.Context
 }
 
+func (m *grpcClient) List(ctx context.Context, resource, region, handleType string, data []byte) ([]byte, error) {
+	var (
+		cancel context.CancelFunc
+	)
+
+	ctx, cancel = context.WithCancel(ctx)
+	defer cancel()
+
+	resp, err := m.client.List(ctx, &proto.ListRequest{
+		Resource:   resource,
+		Region:     region,
+		HandleType: handleType,
+		Data:       data,
+	})
+	if err != nil {
+		return []byte(""), err
+	}
+
+	return resp.Result, nil
+}
+
 func (m *grpcClient) Get(ctx context.Context, resource, region, handleType string, data []byte) ([]byte, error) {
 	var (
 		cancel context.CancelFunc

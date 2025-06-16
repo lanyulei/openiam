@@ -8,6 +8,7 @@ import "context"
 */
 
 type CloudProvider interface {
+	List(ctx context.Context, resource, region, handleType string, data []byte) (result []byte, err error)
 	Get(ctx context.Context, resource, region, handleType string, data []byte) (result []byte, err error)
 	Post(ctx context.Context, resource, region, handleType string, data []byte) (result []byte, err error)
 	Put(ctx context.Context, resource, region, handleType string, data []byte) (result []byte, err error)

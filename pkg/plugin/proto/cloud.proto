@@ -2,6 +2,17 @@ syntax = "proto3";
 package proto;
 option go_package = "./proto";
 
+message ListRequest {
+    string resource = 1;
+    string region = 2;
+    string handleType = 3;
+    bytes data = 4;
+}
+
+message ListResponse {
+    bytes result = 1;
+}
+
 message GetRequest {
     string resource = 1;
     string region = 2;
@@ -49,6 +60,7 @@ message DeleteResponse {
 message Empty {}
 
 service CloudProvider {
+    rpc List(ListRequest) returns (ListResponse);
     rpc Get(GetRequest) returns (GetResponse);
     rpc Post(CreateRequest) returns (CreateResponse);
     rpc Put(UpdateRequest) returns (UpdateResponse);

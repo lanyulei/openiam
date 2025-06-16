@@ -53,6 +53,15 @@ func New(pluginPath string) shared.CloudProvider {
 	return &runPlugin
 }
 
+func (r *RunPlugin) List(ctx context.Context, resource, region, handleType string, data []byte) (result []byte, err error) {
+	defer r.BaseClient.Kill()
+	result, err = r.Raw.(shared.CloudProvider).List(ctx, resource, region, handleType, data)
+	if err != nil {
+		logger.Errorf("failed to list result error: %v", err)
+	}
+	return
+}
+
 func (r *RunPlugin) Get(ctx context.Context, resource, region, handleType string, data []byte) (result []byte, err error) {
 	defer r.BaseClient.Kill()
 	result, err = r.Raw.(shared.CloudProvider).Get(ctx, resource, region, handleType, data)

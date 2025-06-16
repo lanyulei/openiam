@@ -16,6 +16,11 @@ type grpcServer struct {
 	proto.UnimplementedCloudProviderServer
 }
 
+func (m *grpcServer) List(ctx context.Context, req *proto.ListRequest) (*proto.ListResponse, error) {
+	v, err := m.Impl.List(ctx, req.Resource, req.Region, req.HandleType, req.Data)
+	return &proto.ListResponse{Result: v}, err
+}
+
 func (m *grpcServer) Get(ctx context.Context, req *proto.GetRequest) (*proto.GetResponse, error) {
 	v, err := m.Impl.Get(ctx, req.Resource, req.Region, req.HandleType, req.Data)
 	return &proto.GetResponse{Result: v}, err
